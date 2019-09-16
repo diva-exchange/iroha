@@ -182,3 +182,6 @@ typings/
 
 # Private keys
 *.priv
+
+# Backup
+/backup

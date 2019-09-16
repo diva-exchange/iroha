@@ -1,0 +1,129 @@
+# Maintainer: konrad@getdiva.org
+#
+# use the supplied ${PROJECT_PATH}/build.sh to build the images
+# use the supplied ${PROJECT_PATH}/up.sh to start the containers
+
+version: "3.7"
+services:
+  ${I2PD_CONTAINER_NAME}:
+    build:
+      context: ${PROJECT_PATH}/../i2pd/
+      shm_size: 250m
+    image: ${I2PD_IMAGE_NAME:?err}:${I2PD_IMAGE_TAG:-latest}
+    container_name: ${I2PD_CONTAINER_NAME:?err}
+    expose:
+      - ${CONST_I2PD_DOCKER_HTTP_PROXY_PORT:?err} # i2p http proxy
+      - ${CONST_I2PD_DOCKER_SOCKS_PROXY_PORT:?err} # i2p socks proxy
+      - ${CONST_I2PD_DOCKER_WEBCONSOLE_PORT?:err} # i2p webconsole
+    ports:
+      - target: ${CONST_I2PD_DOCKER_HTTP_PROXY_PORT:?err}
+        published: ${I2PD_HTTP_PROXY_PORT:?err}
+        protocol: tcp
+        mode: host
+      - target: ${CONST_I2PD_DOCKER_SOCKS_PROXY_PORT:?err}
+        published: ${I2PD_SOCKS_PROXY_PORT:?err}
+        protocol: tcp
+        mode: host
+      - target: ${CONST_I2PD_DOCKER_WEBCONSOLE_PORT:?err}
+        published: ${I2PD_WEBCONSOLE_PORT:?err}
+        protocol: tcp
+        mode: host
+    environment:
+      DIVA_IP: ${DIVA_IP:-127.0.0.1} # optional, bind to the diva service backend (see i2pd/conf/tunnels.conf)
+      IROHA_IP: ${IROHA_IP:-127.0.0.1} # optional, bind to the iroha service backend (see i2pd/conf/tunnels.conf)
+    volumes:
+      - type: volume
+        source: ${I2PD_CONTAINER_NAME}_i2pd
+        target: /home/i2pd/
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${I2PD_IP:?err}
+
+  ${DIVA_CONTAINER_NAME}:
+    build:
+      context: ${PROJECT_PATH}/../bloom/
+      shm_size: 250m
+    image: ${DIVA_IMAGE_NAME:?err}:${DIVA_IMAGE_TAG:-latest}
+    container_name: ${DIVA_CONTAINER_NAME:?err}
+    expose:
+      - ${CONST_DIVA_DOCKER_PROFILE_PORT:?err} # diva.profile
+      - ${CONST_DIVA_DOCKER_API_PORT:?err} # diva.api
+      - ${CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT:?err} # i2p outgoing proxy
+    environment:
+      I2PD_IP: ${I2PD_IP:-127.0.0.1} # optional - bind to the i2pd service backend
+      IROHA_IP: ${IROHA_IP:-127.0.0.1} # optional - bind to the iroha service backend
+    volumes:
+      - type: volume
+        source: ${DIVA_CONTAINER_NAME}_node
+        target: /home/node/
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${DIVA_IP:?err}
+
+  ${IROHA_CONTAINER_NAME}:
+    build:
+      context: ${PROJECT_PATH}/
+      shm_size: 500m
+    image: ${IROHA_IMAGE_NAME:?err}:${IROHA_IMAGE_TAG:-latest}
+    container_name: ${IROHA_CONTAINER_NAME:?err}
+    expose:
+      - ${CONST_IROHA_DOCKER_TORII_PORT:?err} # torii
+      - ${CONST_IROHA_DOCKER_INTERNAL_PORT:?err} # internal iroha
+    depends_on:
+      - ${POSTGRES_CONTAINER_NAME}
+    environment:
+        IDENT_INSTANCE: ${IDENT_INSTANCE:?err}
+
+        DIVA_IP: ${DIVA_IP:?err}
+        CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT: ${CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT:?err}
+
+        POSTGRES_CONTAINER_NAME: ${POSTGRES_CONTAINER_NAME:?err}
+        POSTGRES_IP: ${POSTGRES_IP:?err}
+        CONST_POSTGRES_DOCKER_PORT: ${CONST_POSTGRES_DOCKER_PORT:?err}
+        POSTGRES_USER: ${POSTGRES_USER:?err}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
+
+        IROHA_NAME_CONFIG: ${IROHA_NAME_CONFIG:?err}
+    volumes:
+      - type: volume
+        source: ${IROHA_CONTAINER_NAME}_iroha
+        target: /opt/iroha
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${IROHA_IP:?err}
+
+  ${POSTGRES_CONTAINER_NAME}:
+    image: postgres:${POSTGRES_VERSION:?err}
+    container_name: ${POSTGRES_CONTAINER_NAME:?err}
+    expose:
+      - ${CONST_POSTGRES_DOCKER_PORT:?err} # postgres
+    command: [ "-c", "max_prepared_transactions=${POSTGRES_MAX_PREPARED_TRANSACTIONS:-100}" ]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?err}
+      #@FIXME, use secret
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
+    volumes:
+      - type: volume
+        source: ${POSTGRES_CONTAINER_NAME}_postgres
+        target: /var/lib/postgresql/data
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${POSTGRES_IP:?err}
+
+networks:
+  ${NETWORK_NAME}:
+    name: ${NETWORK_NAME:?err}
+    ipam:
+      driver: default
+      config:
+        - subnet: ${NETWORK_SUBNET:?err}
+
+volumes:
+  ${I2PD_CONTAINER_NAME}_i2pd:
+    name: ${I2PD_CONTAINER_NAME:?err}_i2pd
+  ${DIVA_CONTAINER_NAME}_node:
+    name: ${DIVA_CONTAINER_NAME:?err}_node
+  ${IROHA_CONTAINER_NAME}_iroha:
+    name: ${IROHA_CONTAINER_NAME:?err}_iroha
+  ${POSTGRES_CONTAINER_NAME}_postgres:
+    name: ${POSTGRES_CONTAINER_NAME:?err}_postgres

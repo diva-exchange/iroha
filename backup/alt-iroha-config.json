@@ -1,0 +1,37 @@
+{
+  "log": {
+    "level": "trace"
+  },
+  "block_store_path" : "/tmp/block_store/",
+  "torii_port" : 50051,
+  "internal_port" : 10001,
+  "database": {
+    "host": "db0",
+    "port": 5432,
+    "user": "postgres",
+    "password": "iroha",
+    "working database": "iroha_data",
+    "maintenance database": "postgres"
+  },
+  "max_proposal_size" : 10,
+  "proposal_delay" : 5000,
+  "vote_delay" : 5000,
+  "mst_enable" : false,
+  "mst_expiration_time" : 1440,
+  "max_rounds_delay": 3000,
+  "stale_stream_max_rounds": 2,
+  "initial_peers": [
+    {
+      "address":"7qlyoq72eayfcd54mqqf7dvivxh7tkn65qej23ukrdhpvrcoi5uq.b32.i2p:10002",
+      "public_key": "8bd9bfb136af95a14183c8e692c04255bb641093711ab987c90f81491d2b6e19"
+    },
+    {
+      "address":"fakuqybxxjmgjykgqfb4l22qc7z7xwdieqzgrbh4eqfx7abib3aa.b32.i2p:10002",
+      "public_key": "65fb119eb203e540dc9664a24097cec1fab2ec0a36118f284932112e406e633f"
+    },
+    {
+      "address":"occtggmwr2skow4z6oa6afmlpy3vnuv3bq34sg22mapakjkpfmkq.b32.i2p:10002",
+      "public_key": "959dd51701ff0d4baa697ffb2862699360aeb0edc38613c6be0ce681f8838342"
+    }
+  ]
+}

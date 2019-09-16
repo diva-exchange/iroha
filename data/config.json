@@ -1,0 +1,20 @@
+{
+  "block_store_path" : "/opt/iroha/blockstore/",
+  "torii_port" : 50051,
+  "internal_port" : 10001,
+  "database": {
+    "host": "$POSTGRES_CONTAINER_NAME",
+    "port": 5432,
+    "user": "$POSTGRES_USER",
+    "password": "$POSTGRES_PASSWORD",
+    "working database": "iroha_data",
+    "maintenance database": "postgres"
+  },
+  "max_proposal_size" : 10,
+  "proposal_delay" : 15000,
+  "vote_delay" : 15000,
+  "mst_enable" : false,
+  "mst_expiration_time" : 1440,
+  "max_rounds_delay": 5000,
+  "stale_stream_max_rounds": 2
+}

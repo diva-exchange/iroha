@@ -9,9 +9,10 @@ LABEL author="Konrad Baechler <konrad@getdiva.org>" \
 COPY data-genesis/* /opt/iroha/data/
 COPY entrypoint-genesis.sh wait-for-it.sh /
 
-RUN apt-get install -y \
-  nano \
-  iputils-ping \
+RUN apt-get update \
+  && apt-get install -y \
+    nano \
+    iputils-ping \
   && mkdir -p "/opt/iroha/blockstore" \
   && chmod +x /entrypoint-genesis.sh /wait-for-it.sh
 

@@ -11,10 +11,11 @@ COPY blockstore/* /opt/iroha/blockstore/
 COPY network/* /
 COPY entrypoint.sh wait-for-it.sh /
 
-RUN apt-get install -y \
-  dnsmasq \
-  nano \
-  iputils-ping \
+RUN apt-get update \
+  && apt-get install -y \
+    dnsmasq \
+    nano \
+    iputils-ping \
   && chmod +x /entrypoint.sh /wait-for-it.sh
 
 VOLUME [ "/opt/iroha/" ]

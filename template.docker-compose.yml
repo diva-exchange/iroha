@@ -41,7 +41,7 @@ services:
 
   ${DIVA_CONTAINER_NAME}:
     build:
-      context: ${PROJECT_PATH}/../bloom/
+      context: ${PROJECT_PATH}/../diva/
       shm_size: 250m
     image: ${DIVA_IMAGE_NAME:?err}:${DIVA_IMAGE_TAG:-latest}
     container_name: ${DIVA_CONTAINER_NAME:?err}

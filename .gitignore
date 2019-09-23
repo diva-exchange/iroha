@@ -180,8 +180,5 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-# Private keys
-*.priv
-
 # Backup
 /backup

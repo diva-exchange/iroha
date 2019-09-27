@@ -14,10 +14,10 @@
     "maintenance database": "postgres"
   },
   "max_proposal_size" : 10,
-  "proposal_delay" : 15000,
-  "vote_delay" : 15000,
+  "proposal_delay" : 5000,
+  "vote_delay" : 5000,
   "mst_enable" : false,
   "mst_expiration_time" : 1440,
-  "max_rounds_delay": 5000,
+  "max_rounds_delay": 3000,
   "stale_stream_max_rounds": 2
 }

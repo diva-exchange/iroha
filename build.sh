@@ -15,5 +15,5 @@ envsubst < $PATH_INPUT_YML > $PATH_OUTPUT_YML
 set +a
 
 export IDENT_INSTANCE
-docker-compose -f $PATH_OUTPUT_YML build --no-cache --force-rm iroha0
+docker-compose -f $PATH_OUTPUT_YML build --no-cache --force-rm
 rm $PATH_OUTPUT_YML

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Author/Maintainer: konrad@getdiva.org
+# Author/Maintainer: konrad@diva.exchange
 #
 set -e
 
@@ -13,7 +13,7 @@ POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?err}
 CONST_POSTGRES_DOCKER_PORT=${CONST_POSTGRES_DOCKER_PORT:?err}
 IROHA_NAME_CONFIG=${IROHA_NAME_CONFIG:?err}
 DIVA_IP=${DIVA_IP:?err}
-CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT=${CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT:?err}
+CONST_DIVA_HTTP2_UTP_PROXY_PORT=10001
 
 LOCAL_IROHA_NODE_KEY=node${IDENT_INSTANCE:?err}
 
@@ -23,7 +23,7 @@ echo "nameserver 127.0.1.1" > /etc/resolv.conf
 dnsmasq -a 127.0.1.1 \
   --no-hosts \
   --local-service \
-  --address=/i2p/${DIVA_IP} \
+  --address=/diva.local/${DIVA_IP} \
   --address=/${POSTGRES_CONTAINER_NAME}/${POSTGRES_IP} \
   --address=/#/127.0.0.1
 
@@ -47,7 +47,6 @@ fi
 
 echo key: ${LOCAL_IROHA_NODE_KEY}
 echo postgres: ${POSTGRES_CONTAINER_NAME}:${CONST_POSTGRES_DOCKER_PORT}
-echo i2p proxy: ${DIVA_IP}:${CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT}
 
 # remove unused keys
 mv -f ${LOCAL_IROHA_NODE_KEY}* ../
@@ -55,7 +54,7 @@ rm -f node*
 mv -f ../${LOCAL_IROHA_NODE_KEY}* ./
 
 /wait-for-it.sh ${POSTGRES_CONTAINER_NAME}:${CONST_POSTGRES_DOCKER_PORT} -t 30 -s -- \
-/wait-for-it.sh ${DIVA_IP}:${CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT} -t 30 -s -- \
+/wait-for-it.sh ${DIVA_IP}:${CONST_DIVA_HTTP2_UTP_PROXY_PORT} -t 30 -s -- \
   && irohad \
     --config ${IROHA_NAME_CONFIG} \
     --keypair_name ${LOCAL_IROHA_NODE_KEY}

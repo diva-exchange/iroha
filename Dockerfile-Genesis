@@ -1,10 +1,10 @@
 FROM hyperledger/iroha:1.1.0
 
-LABEL author="Konrad Baechler <konrad@getdiva.org>" \
-  maintainer="Konrad Baechler <konrad@getdiva.org>" \
+LABEL author="Konrad Baechler <konrad@diva.exchange>" \
+  maintainer="Konrad Baechler <konrad@diva.exchange>" \
   name="diva.iroha" \
   description="Distributed digital value exchange upholding security, reliability and privacy" \
-  url="https://getdiva.org"
+  url="https://diva.exchange"
 
 COPY data-genesis/* /opt/iroha/data/
 COPY entrypoint-genesis.sh wait-for-it.sh /

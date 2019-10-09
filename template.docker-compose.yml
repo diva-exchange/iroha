@@ -1,4 +1,4 @@
-# Maintainer: konrad@getdiva.org
+# Maintainer: konrad@diva.exchange
 #
 # use the supplied ${PROJECT_PATH}/build.sh to build the images
 # use the supplied ${PROJECT_PATH}/up.sh to start the containers
@@ -30,13 +30,12 @@ services:
         mode: host
     environment:
       DIVA_IP: ${DIVA_IP:-127.0.0.1} # optional, bind to the diva service backend (see i2pd/conf/tunnels.conf)
-      IROHA_IP: ${IROHA_IP:-127.0.0.1} # optional, bind to the iroha service backend (see i2pd/conf/tunnels.conf)
     volumes:
       - type: volume
         source: ${I2PD_CONTAINER_NAME}_i2pd
         target: /home/i2pd/
     networks:
-      ${NETWORK_NAME}:
+      diva_net:
         ipv4_address: ${I2PD_IP:?err}
 
   ${DIVA_CONTAINER_NAME}:
@@ -48,7 +47,6 @@ services:
     expose:
       - ${CONST_DIVA_DOCKER_PROFILE_PORT:?err} # diva.profile
       - ${CONST_DIVA_DOCKER_API_PORT:?err} # diva.api
-      - ${CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT:?err} # i2p outgoing proxy
     environment:
       I2PD_IP: ${I2PD_IP:-127.0.0.1} # optional - bind to the i2pd service backend
       IROHA_IP: ${IROHA_IP:-127.0.0.1} # optional - bind to the iroha service backend
@@ -57,7 +55,7 @@ services:
         source: ${DIVA_CONTAINER_NAME}_node
         target: /home/node/
     networks:
-      ${NETWORK_NAME}:
+      diva_net:
         ipv4_address: ${DIVA_IP:?err}
 
   ${IROHA_CONTAINER_NAME}:
@@ -75,7 +73,6 @@ services:
       IDENT_INSTANCE: ${IDENT_INSTANCE:?err}
 
       DIVA_IP: ${DIVA_IP:?err}
-      CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT: ${CONST_DIVA_DOCKER_I2PD_PROXY_OUT_PORT:?err}
 
       POSTGRES_CONTAINER_NAME: ${POSTGRES_CONTAINER_NAME:?err}
       POSTGRES_IP: ${POSTGRES_IP:?err}
@@ -89,7 +86,7 @@ services:
         source: ${IROHA_CONTAINER_NAME}_iroha
         target: /opt/iroha
     networks:
-      ${NETWORK_NAME}:
+      diva_net:
         ipv4_address: ${IROHA_IP:?err}
 
   ${POSTGRES_CONTAINER_NAME}:
@@ -100,19 +97,18 @@ services:
     command: [ "-c", "max_prepared_transactions=${POSTGRES_MAX_PREPARED_TRANSACTIONS:-100}" ]
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?err}
-      #@FIXME, use secret
+      #@FIXME, use secret, https://docs.docker.com/compose/compose-file/#secrets-configuration-reference
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
     volumes:
       - type: volume
         source: ${POSTGRES_CONTAINER_NAME}_postgres
         target: /var/lib/postgresql/data
     networks:
-      ${NETWORK_NAME}:
+      diva_net:
         ipv4_address: ${POSTGRES_IP:?err}
 
 networks:
-  ${NETWORK_NAME}:
-    name: ${NETWORK_NAME:?err}
+  diva_net:
     ipam:
       driver: default
       config:

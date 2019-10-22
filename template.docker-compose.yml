@@ -35,7 +35,7 @@ services:
         source: ${I2PD_CONTAINER_NAME}_i2pd
         target: /home/i2pd/
     networks:
-      diva_net:
+      ${NETWORK_NAME}:
         ipv4_address: ${I2PD_IP:?err}
 
   ${DIVA_CONTAINER_NAME}:
@@ -55,7 +55,7 @@ services:
         source: ${DIVA_CONTAINER_NAME}_node
         target: /home/node/
     networks:
-      diva_net:
+      ${NETWORK_NAME}:
         ipv4_address: ${DIVA_IP:?err}
 
   ${IROHA_CONTAINER_NAME}:
@@ -86,7 +86,7 @@ services:
         source: ${IROHA_CONTAINER_NAME}_iroha
         target: /opt/iroha
     networks:
-      diva_net:
+      ${NETWORK_NAME}:
         ipv4_address: ${IROHA_IP:?err}
 
   ${POSTGRES_CONTAINER_NAME}:
@@ -104,11 +104,12 @@ services:
         source: ${POSTGRES_CONTAINER_NAME}_postgres
         target: /var/lib/postgresql/data
     networks:
-      diva_net:
+      ${NETWORK_NAME}:
         ipv4_address: ${POSTGRES_IP:?err}
 
 networks:
-  diva_net:
+  ${NETWORK_NAME}:
+    name: ${NETWORK_NAME:?err}
     ipam:
       driver: default
       config:

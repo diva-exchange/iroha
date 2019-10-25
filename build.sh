@@ -6,14 +6,12 @@ export PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 &&
 cd $PROJECT_PATH
 
 IDENT_INSTANCE=0
-PATH_INPUT_YML=template.docker-compose.yml
-PATH_OUTPUT_YML=/tmp/docker-compose-$IDENT_INSTANCE.yml
+export IDENT_INSTANCE
 
 set -a
 source iroha-diva.env
-envsubst < $PATH_INPUT_YML > $PATH_OUTPUT_YML
+envsubst < template.docker-compose.yml > /tmp/docker-compose.yml
 set +a
 
-export IDENT_INSTANCE
-docker-compose -f $PATH_OUTPUT_YML build --no-cache --force-rm
-rm $PATH_OUTPUT_YML
+docker-compose -f /tmp/docker-compose.yml build --no-cache --force-rm
+rm /tmp/docker-compose.yml

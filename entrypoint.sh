@@ -12,8 +12,9 @@ POSTGRES_USER=${POSTGRES_USER:?err}
 POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?err}
 CONST_POSTGRES_DOCKER_PORT=${CONST_POSTGRES_DOCKER_PORT:?err}
 IROHA_NAME_CONFIG=${IROHA_NAME_CONFIG:?err}
+IROHA_IP=${IROHA_IP:?err}
 DIVA_IP=${DIVA_IP:?err}
-CONST_DIVA_HTTP2_UTP_PROXY_PORT=10001
+CONST_DIVA_HTTP2_UTP_PROXY_PORT=${CONST_DIVA_HTTP2_UTP_PROXY_PORT:?err}
 
 LOCAL_IROHA_NODE_KEY=node${IDENT_INSTANCE:?err}
 
@@ -23,6 +24,7 @@ echo "nameserver 127.0.1.1" > /etc/resolv.conf
 dnsmasq -a 127.0.1.1 \
   --no-hosts \
   --local-service \
+  --address=/${LOCAL_IROHA_NODE_KEY}.diva.local/${IROHA_IP} \
   --address=/diva.local/${DIVA_IP} \
   --address=/${POSTGRES_CONTAINER_NAME}/${POSTGRES_IP} \
   --address=/#/127.0.0.1
@@ -55,6 +57,7 @@ mv -f ../${LOCAL_IROHA_NODE_KEY}* ./
 
 /wait-for-it.sh ${POSTGRES_CONTAINER_NAME}:${CONST_POSTGRES_DOCKER_PORT} -t 30 -s -- \
 /wait-for-it.sh ${DIVA_IP}:${CONST_DIVA_HTTP2_UTP_PROXY_PORT} -t 30 -s -- \
+  && sleep 60 \
   && irohad \
     --config ${IROHA_NAME_CONFIG} \
     --keypair_name ${LOCAL_IROHA_NODE_KEY}

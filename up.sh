@@ -17,6 +17,15 @@ fi
 export PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $PROJECT_PATH
 
+# create the network
+IDENT_INSTANCE=0
+source iroha-diva.env
+docker network create \
+  --driver=bridge \
+  --subnet=172.18.0.0/16 \
+  --gateway=172.18.0.1 \
+  diva_net
+
 PATH_INPUT_YML=template.docker-compose.yml
 for ((IDENT_INSTANCE = 0 ; IDENT_INSTANCE <= $(($1 - 1)) ; IDENT_INSTANCE++)); do
   set -a

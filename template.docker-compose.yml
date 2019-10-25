@@ -48,6 +48,7 @@ services:
       - ${CONST_DIVA_DOCKER_PROFILE_PORT:?err} # diva.profile
       - ${CONST_DIVA_DOCKER_API_PORT:?err} # diva.api
     environment:
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP:?err} # mandatory - bind to the docker host
       I2PD_IP: ${I2PD_IP:-127.0.0.1} # optional - bind to the i2pd service backend
       IROHA_IP: ${IROHA_IP:-127.0.0.1} # optional - bind to the iroha service backend
     volumes:
@@ -72,15 +73,18 @@ services:
     environment:
       IDENT_INSTANCE: ${IDENT_INSTANCE:?err}
 
-      DIVA_IP: ${DIVA_IP:?err}
+      IROHA_NAME_CONFIG: ${IROHA_NAME_CONFIG:?err}
+      IROHA_IP: ${IROHA_IP:?err}
 
       POSTGRES_CONTAINER_NAME: ${POSTGRES_CONTAINER_NAME:?err}
       POSTGRES_IP: ${POSTGRES_IP:?err}
       CONST_POSTGRES_DOCKER_PORT: ${CONST_POSTGRES_DOCKER_PORT:?err}
+      #@FIXME, use secret, https://docs.docker.com/compose/compose-file/#secrets-configuration-reference
       POSTGRES_USER: ${POSTGRES_USER:?err}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
 
-      IROHA_NAME_CONFIG: ${IROHA_NAME_CONFIG:?err}
+      DIVA_IP: ${DIVA_IP:?err}
+      CONST_DIVA_HTTP2_UTP_PROXY_PORT: ${CONST_DIVA_HTTP2_UTP_PROXY_PORT:?err}
     volumes:
       - type: volume
         source: ${IROHA_CONTAINER_NAME}_iroha
@@ -96,8 +100,8 @@ services:
       - ${CONST_POSTGRES_DOCKER_PORT:?err} # postgres
     command: [ "-c", "max_prepared_transactions=${POSTGRES_MAX_PREPARED_TRANSACTIONS:-100}" ]
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:?err}
       #@FIXME, use secret, https://docs.docker.com/compose/compose-file/#secrets-configuration-reference
+      POSTGRES_USER: ${POSTGRES_USER:?err}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
     volumes:
       - type: volume
@@ -109,11 +113,7 @@ services:
 
 networks:
   ${NETWORK_NAME}:
-    name: ${NETWORK_NAME:?err}
-    ipam:
-      driver: default
-      config:
-        - subnet: ${NETWORK_SUBNET:?err}
+    external: true
 
 volumes:
   ${I2PD_CONTAINER_NAME}_i2pd:

@@ -84,7 +84,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
 
       DIVA_IP: ${DIVA_IP:?err}
-      CONST_DIVA_HTTP2_UTP_PROXY_PORT: ${CONST_DIVA_HTTP2_UTP_PROXY_PORT:?err}
+      CONST_DIVA_BACKEND_UTP_PROXY_PORT: ${CONST_DIVA_BACKEND_UTP_PROXY_PORT:?err}
     volumes:
       - type: volume
         source: ${IROHA_CONTAINER_NAME}_iroha

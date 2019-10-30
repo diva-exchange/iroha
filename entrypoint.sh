@@ -57,8 +57,6 @@ rm -f node*
 mv -f ../${LOCAL_IROHA_NODE_KEY}* ./
 
 /wait-for-it.sh ${POSTGRES_CONTAINER_NAME}:${CONST_POSTGRES_DOCKER_PORT} -t 30 -s -- \
-/wait-for-it.sh ${DIVA_IP}:${CONST_DIVA_BACKEND_UTP_PROXY_PORT} -t 30 -s -- \
-  && sleep 10 \
   && irohad \
     --config ${IROHA_NAME_CONFIG} \
     --keypair_name ${LOCAL_IROHA_NODE_KEY}

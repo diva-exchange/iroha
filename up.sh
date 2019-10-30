@@ -26,6 +26,11 @@ docker network create \
   --gateway=172.18.0.1 \
   diva_net
 
+
+# run docker for hangout
+docker run -d --name hangout diva/hangout:latest
+
+
 PATH_INPUT_YML=template.docker-compose.yml
 for ((IDENT_INSTANCE = 0 ; IDENT_INSTANCE <= $(($1 - 1)) ; IDENT_INSTANCE++)); do
   set -a

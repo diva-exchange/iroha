@@ -15,3 +15,6 @@ set +a
 
 docker-compose -f /tmp/docker-compose.yml build --no-cache --force-rm
 rm /tmp/docker-compose.yml
+
+# build hangout
+cd ../hangout/ && ./build.sh

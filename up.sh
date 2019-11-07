@@ -20,11 +20,12 @@ cd $PROJECT_PATH
 # create the network
 IDENT_INSTANCE=0
 source iroha-diva.env
-docker network create \
-  --driver=bridge \
-  --subnet=172.18.0.0/16 \
-  --gateway=172.18.0.1 \
-  diva_net
+docker network inspect diva_net >/dev/null 2>&1 || \
+  docker network create \
+    --driver=bridge \
+    --subnet=172.18.0.0/16 \
+    --gateway=172.18.0.1 \
+    diva_net
 
 
 # run docker for hangout

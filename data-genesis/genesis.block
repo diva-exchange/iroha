@@ -9,7 +9,7 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"node0.diva.local:10001",
+                                "address":"holodeck0.diva.local:10001",
                                 "peerKey":"95f67e522919b722f1f9947317da8154fca9b83e067e0730d0cd26a125c4d9fc"
                              }
                           }
@@ -17,7 +17,7 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"node1.diva.local:10001",
+                                "address":"holodeck1.diva.local:10001",
                                 "peerKey":"54eb155d3891ced3237efc448f7979c90f164f2b18c62e56af29b4609e1d968c"
                              }
                           }
@@ -25,7 +25,7 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"node2.diva.local:10001",
+                                "address":"holodeck2.diva.local:10001",
                                 "peerKey":"4817d9c2a0df9c0b2ccd7001d0e5572b04ead40293902f73ef00fa7c4d619112"
                              }
                           }
@@ -59,6 +59,14 @@
                                 "can_set_quorum",
                                 "can_subtract_asset_qty",
                                 "can_transfer"
+                             ]
+                          }
+                       },
+                       {
+                          "createRole":{
+                             "roleName":"api",
+                             "permissions":[
+                                "can_set_detail"
                              ]
                           }
                        },
@@ -101,44 +109,32 @@
                        },
                        {
                           "createDomain":{
-                             "domainId":"xmr-btc.obk",
-                             "defaultRole":"subscriber"
-                          }
-                       },
-                       {
-                          "createDomain":{
-                             "domainId":"xmr-btc.smt",
-                             "defaultRole":"subscriber"
-                          }
-                       },
-                       {
-                          "createDomain":{
                              "domainId":"holodeck",
-                             "defaultRole":"subscriber"
-                          }
-                       },
-                       {
-                          "createDomain":{
-                             "domainId":"genesis",
                              "defaultRole":"subscriber"
                           }
                        },
                        {
                           "createAccount":{
                              "accountName":"diva",
-                             "domainId":"genesis",
-                             "publicKey":"c6ff0f0527499da7be7a774f4fcbc72cfd61a9d15e29a328ad7fd7bdbe0b5c09"
+                             "domainId":"holodeck",
+                             "publicKey":"4bf1937bbbb29cd8eb17d35e46b9c56dc2565335e3bd1614ffe0c8deead6c748"
                           }
                        },
                        {
                           "appendRole":{
-                             "accountId":"diva@genesis",
+                             "accountId":"diva@holodeck",
                              "roleName":"developer"
                           }
                        },
                        {
+                          "appendRole":{
+                             "accountId":"diva@holodeck",
+                             "roleName":"api"
+                          }
+                       },
+                       {
                           "detachRole":{
-                             "accountId":"diva@genesis",
+                             "accountId":"diva@holodeck",
                              "roleName":"subscriber"
                           }
                        }

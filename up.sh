@@ -43,4 +43,5 @@ for ((IDENT_INSTANCE = 0 ; IDENT_INSTANCE <= $(($1 - 1)) ; IDENT_INSTANCE++)); d
   echo "Starting instance $IDENT_INSTANCE"
   docker-compose -f $PATH_OUTPUT_YML up -d
   rm $PATH_OUTPUT_YML
+  sleep 10
 done

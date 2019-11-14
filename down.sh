@@ -30,7 +30,6 @@ for ((IDENT_INSTANCE = 0 ; IDENT_INSTANCE <= $(($1 - 1)) ; IDENT_INSTANCE++)); d
   docker-compose -f $PATH_OUTPUT_YML down
   rm $PATH_OUTPUT_YML
 
-  # disabled
   docker volume rm db${IDENT_INSTANCE}_postgres iroha${IDENT_INSTANCE}_iroha
 done
 

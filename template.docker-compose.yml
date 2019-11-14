@@ -13,15 +13,10 @@ services:
     container_name: ${I2PD_CONTAINER_NAME:?err}
     expose:
       - ${CONST_I2PD_DOCKER_HTTP_PROXY_PORT:?err} # i2p http proxy
-      - ${CONST_I2PD_DOCKER_SOCKS_PROXY_PORT:?err} # i2p socks proxy
       - ${CONST_I2PD_DOCKER_WEBCONSOLE_PORT?:err} # i2p webconsole
     ports:
       - target: ${CONST_I2PD_DOCKER_HTTP_PROXY_PORT:?err}
         published: ${I2PD_HTTP_PROXY_PORT:?err}
-        protocol: tcp
-        mode: host
-      - target: ${CONST_I2PD_DOCKER_SOCKS_PROXY_PORT:?err}
-        published: ${I2PD_SOCKS_PROXY_PORT:?err}
         protocol: tcp
         mode: host
       - target: ${CONST_I2PD_DOCKER_WEBCONSOLE_PORT:?err}

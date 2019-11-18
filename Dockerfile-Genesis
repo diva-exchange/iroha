@@ -1,4 +1,4 @@
-FROM hyperledger/iroha:1.1.0
+FROM hyperledger/iroha:1.1.1
 
 LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   maintainer="Konrad Baechler <konrad@diva.exchange>" \

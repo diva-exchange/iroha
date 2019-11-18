@@ -5,7 +5,7 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $PROJECT_PATH
 
-docker build -f Dockerfile-Genesis --no-cache --force-rm -t diva/iroha-genesis:1.1.0 .
+docker build -f Dockerfile-Genesis --no-cache --force-rm -t diva/iroha-genesis:1.1.1 .
 
 docker network create iroha-genesis-network
 
@@ -24,7 +24,7 @@ docker run \
   --name iroha_genesis \
   --volume iroha_genesis:/opt/iroha/ \
   --network=iroha-genesis-network \
-  diva/iroha-genesis:1.1.0
+  diva/iroha-genesis:1.1.1
 
 # wait until the genesis block got created
 sleep 10

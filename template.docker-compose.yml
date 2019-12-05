@@ -44,8 +44,9 @@ services:
       - ${CONST_DIVA_DOCKER_API_PORT:?err} # diva.api
     environment:
       DOCKER_HOST_IP: ${DOCKER_HOST_IP:?err} # mandatory - bind to the docker host
-      I2PD_IP: ${I2PD_IP:-127.0.0.1} # optional - bind to the i2pd service backend
+      I2PD_IP: ${I2PD_IP:?err} # mandatory - bind to the i2pd service backend
       IROHA_IP: ${IROHA_IP:-127.0.0.1} # optional - bind to the iroha service backend
+      POSTGRES_IP: ${POSTGRES_IP:-127.0.0.1} # optional - bind to the postgres backend
     volumes:
       - type: volume
         source: ${DIVA_CONTAINER_NAME}_node

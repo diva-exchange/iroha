@@ -64,6 +64,11 @@ services:
     expose:
       - ${CONST_IROHA_DOCKER_TORII_PORT:?err} # torii
       - ${CONST_IROHA_DOCKER_INTERNAL_PORT:?err} # internal iroha
+    ports:
+      - target: ${CONST_IROHA_DOCKER_TORII_PORT:?err} # torii
+        published: ${IROHA_TORII_PORT:?err}
+        protocol: tcp
+        mode: host
     depends_on:
       - ${POSTGRES_CONTAINER_NAME}
     environment:

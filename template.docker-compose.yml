@@ -54,6 +54,8 @@ services:
     networks:
       ${NETWORK_NAME}:
         ipv4_address: ${DIVA_IP:?err}
+    ulimits:
+      memlock: 1048576
 
   ${IROHA_CONTAINER_NAME}:
     build:

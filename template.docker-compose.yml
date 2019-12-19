@@ -101,6 +101,11 @@ services:
     container_name: ${POSTGRES_CONTAINER_NAME:?err}
     expose:
       - ${CONST_POSTGRES_DOCKER_PORT:?err} # postgres
+    ports:
+      - target: ${CONST_POSTGRES_DOCKER_PORT:?err} # postgres
+        published: ${POSTGRES_PORT:?err}
+        protocol: tcp
+        mode: host
     command: [ "-c", "max_prepared_transactions=${POSTGRES_MAX_PREPARED_TRANSACTIONS:-100}" ]
     environment:
       #@FIXME, use secret, https://docs.docker.com/compose/compose-file/#secrets-configuration-reference

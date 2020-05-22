@@ -3,9 +3,9 @@
 set -e
 
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-cd $PROJECT_PATH
+cd ${PROJECT_PATH}/../
 
-docker build -f Dockerfile-Genesis --no-cache --force-rm -t diva/iroha-genesis:1.1.1 .
+docker build -f Dockerfile-Genesis --no-cache --force-rm -t diva/iroha-genesis:latest .
 
 docker network create iroha-genesis-network
 
@@ -24,14 +24,14 @@ docker run \
   --name iroha_genesis \
   --volume iroha_genesis:/opt/iroha/ \
   --network=iroha-genesis-network \
-  diva/iroha-genesis:1.1.1
+  diva/iroha-genesis:latest
 
 # wait until the genesis block got created
 sleep 10
 
 cp -f /var/lib/docker/volumes/iroha_genesis/_data/blockstore/0000000000000001 \
-  /home/konrad/workspace/kopanyo/diva/iroha/blockstore/0000000000000001
-chown konrad:konrad /home/konrad/workspace/kopanyo/diva/iroha/blockstore/0000000000000001
+  blockstore/0000000000000001
+chown --reference blockstore blockstore/0000000000000001
 
 docker stop postgres_genesis
 docker rm postgres_genesis

@@ -1,0 +1,17 @@
+{
+  "name": "@diva.exchange/iroha",
+  "version": "0.1.0",
+  "description": "",
+  "author": "Konrad Baechler <konrad@diva.exchange> (https://diva.exchange)",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://codeberg.org/diva.exchange/iroha.git"
+  },
+  "dependencies": {
+    "esm": "^3.2.25"
+  }
+}

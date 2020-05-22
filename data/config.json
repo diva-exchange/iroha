@@ -6,10 +6,10 @@
   "torii_port" : 50051,
   "internal_port" : 10001,
   "database": {
-    "host": "$POSTGRES_CONTAINER_NAME",
+    "host": "localhost",
     "port": 5432,
-    "user": "$POSTGRES_USER",
-    "password": "$POSTGRES_PASSWORD",
+    "user": "postgres",
+    "password": "iroha",
     "working database": "iroha_data",
     "maintenance database": "postgres"
   },

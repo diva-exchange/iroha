@@ -5,7 +5,7 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${PROJECT_PATH}/../
 
-docker build -f Dockerfile-Genesis --no-cache --force-rm -t diva/iroha-genesis:latest .
+docker build -f Dockerfile-Genesis --no-cache --force-rm -t divax/iroha-genesis:latest .
 
 docker network create iroha-genesis-network
 
@@ -16,7 +16,7 @@ docker run \
   -e POSTGRES_PASSWORD=postgres_genesis \
   --network=iroha-genesis-network \
   -d \
-  postgres:9.5 \
+  postgres:10 \
   -c 'max_prepared_transactions=100'
 
 docker run \
@@ -24,7 +24,7 @@ docker run \
   --name iroha_genesis \
   --volume iroha_genesis:/opt/iroha/ \
   --network=iroha-genesis-network \
-  diva/iroha-genesis:latest
+  divax/iroha-genesis:latest
 
 # wait until the genesis block got created
 sleep 10
@@ -40,4 +40,4 @@ docker stop iroha_genesis
 docker rm iroha_genesis
 docker volume rm iroha_genesis
 docker network rm iroha-genesis-network
-
+docker rmi divax/iroha-genesis:latest

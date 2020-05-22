@@ -17,7 +17,7 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"holodeck1.diva.local:10001",
+                                "address":"holodeck1.diva.local:10002",
                                 "peerKey":"54eb155d3891ced3237efc448f7979c90f164f2b18c62e56af29b4609e1d968c"
                              }
                           }
@@ -25,7 +25,7 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"holodeck2.diva.local:10001",
+                                "address":"holodeck2.diva.local:10003",
                                 "peerKey":"4817d9c2a0df9c0b2ccd7001d0e5572b04ead40293902f73ef00fa7c4d619112"
                              }
                           }

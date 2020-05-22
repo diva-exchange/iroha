@@ -2,15 +2,15 @@
   "log": {
     "level": "trace"
   },
-  "block_store_path" : "/opt/iroha/blockstore/",
-  "torii_port" : 50051,
-  "internal_port" : 10001,
+  "block_store_path" : "/opt/iroha/blockstore2/",
+  "torii_port" : 50053,
+  "internal_port" : 10003,
   "database": {
     "host": "localhost",
     "port": 5432,
     "user": "postgres",
     "password": "iroha",
-    "working database": "iroha_data",
+    "working database": "iroha_data2",
     "maintenance database": "postgres"
   },
   "max_proposal_size" : 10,

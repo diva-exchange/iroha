@@ -6,7 +6,7 @@ PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${PROJECT_PATH}/../
 
 # persistent data storage
-docker volume create iroha0
+docker volume create iroha
 
 # start the container
-docker run -d --name=iroha0 --mount type=volume,src=iroha0,dst=/opt/iroha/data/ diva/iroha:latest
+docker run -d -p 25432:5432 -p 50151:50051 --name=iroha --mount type=volume,src=iroha,dst=/opt/iroha/data/ divax/iroha:latest

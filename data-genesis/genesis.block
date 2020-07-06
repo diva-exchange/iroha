@@ -9,24 +9,24 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"holodeck0.diva.local:10001",
-                                "peerKey":"95f67e522919b722f1f9947317da8154fca9b83e067e0730d0cd26a125c4d9fc"
+                                "address":"testnet-a.diva.local:10001",
+                                "peerKey":"$TESTNET_A"
                              }
                           }
                        },
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"holodeck1.diva.local:10002",
-                                "peerKey":"54eb155d3891ced3237efc448f7979c90f164f2b18c62e56af29b4609e1d968c"
+                                "address":"testnet-b.diva.local:10001",
+                                "peerKey":"$TESTNET_B"
                              }
                           }
                        },
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"holodeck2.diva.local:10003",
-                                "peerKey":"4817d9c2a0df9c0b2ccd7001d0e5572b04ead40293902f73ef00fa7c4d619112"
+                                "address":"testnet-c.diva.local:10001",
+                                "peerKey":"$TESTNET_C"
                              }
                           }
                        },
@@ -109,32 +109,32 @@
                        },
                        {
                           "createDomain":{
-                             "domainId":"holodeck",
+                             "domainId":"testnet",
                              "defaultRole":"subscriber"
                           }
                        },
                        {
                           "createAccount":{
                              "accountName":"diva",
-                             "domainId":"holodeck",
-                             "publicKey":"0370e360e245f324d58be618826964bfc88e968692f4f87c3925c124cc029509"
+                             "domainId":"testnet",
+                             "publicKey":"$DIVA_TESTNET"
                           }
                        },
                        {
                           "appendRole":{
-                             "accountId":"diva@holodeck",
+                             "accountId":"diva@testnet",
                              "roleName":"developer"
                           }
                        },
                        {
                           "appendRole":{
-                             "accountId":"diva@holodeck",
+                             "accountId":"diva@testnet",
                              "roleName":"api"
                           }
                        },
                        {
                           "detachRole":{
-                             "accountId":"diva@holodeck",
+                             "accountId":"diva@testnet",
                              "roleName":"subscriber"
                           }
                        }

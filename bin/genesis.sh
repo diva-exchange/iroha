@@ -26,12 +26,22 @@ docker run \
   --network=iroha-genesis-network \
   divax/iroha-genesis:latest
 
-# wait until the genesis block got created
+# wait until the genesis block and the new keys have been created
 sleep 10
 
+# copy genesis block
 cp -f /var/lib/docker/volumes/iroha_genesis/_data/blockstore/0000000000000001 \
   blockstore/0000000000000001
 chown --reference blockstore blockstore/0000000000000001
+
+# copy keys
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/diva@testnet.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/testnet-a.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/testnet-b.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/testnet-c.* data/
+chown --reference data data/*
+chmod 0600 data/*.priv
+chmod 0644 data/*.pub
 
 docker stop postgres_genesis
 docker rm postgres_genesis

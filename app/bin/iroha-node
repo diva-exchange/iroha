@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+/**
+ * diva Iroha Node
+ * Copyright(c) 2020 Konrad Baechler, https://diva.exchange
+ * GPL3 Licensed
+ */
+
+'use strict'
+
+import { IrohaNode } from '../src/iroha-node'
+
+IrohaNode.make(process.env.PORT_IROHA_INTERNAL || 10001)

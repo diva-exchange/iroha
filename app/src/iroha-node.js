@@ -33,12 +33,14 @@ export class IrohaNode {
    */
   constructor (port) {
     this._mapNode = new Map([
-      ['testnet-a', 'hl6ihcgiohdaexzaprjkmcb6onew2ud3g5vcscro56ls5qnpoexq.b32.i2p'],
-      ['testnet-b', '5en2exchzqkecujhdu37j3bi6urzykm7mx54yt3rygtrgzbmouqa.b32.i2p'],
-      ['testnet-c', 'ynbd67lmfwo2lt2wip5zqyh4dzmjmjoli2z54mhh7sslpfuxfwla.b32.i2p']
+      ['testnet-a', 'zmkwwarruox7i5ditmltnf4d36b7lwadk2egrcl3jhptpto4fplq.b32.i2p'],
+      ['testnet-b', 'txbz37jbvotktzyjkzaauqzdzlpbkaqy7t5pml46mtv6pvlc2zmq.b32.i2p'],
+      ['testnet-c', 'so2tld2bo4ghaydnz2fc2clclr4p5rw5ym5sby7drobzcnz57n6q.b32.i2p']
     ])
 
     this._port = port
+    this._id = 1
+    this._socket = new Map()
 
     this._createServer('172.18.1.1')
     this._createServer('172.18.2.1')
@@ -52,9 +54,14 @@ export class IrohaNode {
   _createServer (ip) {
     net.createServer((c) => {
       let stream = null
-      let socket = null
+      const id = this._id++
+      Logger.trace('ID: ' + id + ' - Size: ' + this._socket.size)
 
       c.on('data', (data) => {
+        let socket = null
+        if (this._socket.has(id)) {
+          socket = this._socket.get(id)
+        }
         if (socket && !socket.destroyed) {
           if (!socket.write(data)) {
             socket.destroy()
@@ -70,20 +77,26 @@ export class IrohaNode {
             Logger.trace('Getting SocksClient for: ' + this._mapNode.get(match[1]))
             IrohaNode._getSocksClient(this._mapNode.get(match[1])).then((sock) => {
               socket = sock
+              this._socket.set(id, socket)
               socket.on('error', (error) => {
                 Logger.trace('SocksClient onError').error(error)
+                socket.destroy()
+              })
+              socket.on('end', (data) => {
+                Logger.trace('SocksClient onEnd, ' + id)
+                data ? c.end(data) : c.end()
               })
               socket.on('close', () => {
-                Logger.trace('SocksClient onClose')
-                socket = null
+                Logger.trace('SocksClient onClose, ' + id)
+                this._socket.delete(id)
               })
               socket.on('data', (data) => {
-                Logger.trace('SocksClient onData')
-                c.write(data)
+                if (!c.write(data)) {
+                  socket.destroy()
+                }
               })
 
-              // piping together
-              if (!socket.write(stream)) {
+              if (!stream || !socket.write(stream)) {
                 socket.destroy()
               }
               stream = null
@@ -94,16 +107,21 @@ export class IrohaNode {
         }
       })
       c.on('end', (data) => {
-        Logger.trace('C onEnd')
-        if (data) {
-          Logger.trace('C onEnd has Data')
+        Logger.trace('C onEnd, ' + id)
+        if (this._socket.has(id)) {
+          data ? this._socket.get(id).end(data) : this._socket.get(id).end()
         }
       })
       c.on('close', () => {
-        Logger.trace('C onClose')
+        Logger.trace('C onClose, ' + id)
+        if (this._socket.has(id)) {
+          const socket = this._socket.get(id)
+          socket.destroy()
+        }
       })
       c.on('error', (error) => {
         Logger.trace('C onError').error(error)
+        c.destroy()
       })
     })
       .listen(this._port, ip, () => {

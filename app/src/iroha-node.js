@@ -10,52 +10,69 @@ import { Logger } from '@diva.exchange/diva-logger'
 import net from 'net'
 import { SocksClient } from 'socks'
 
-const PORT_IROHA_INTERNAL = 10001
-
 export class IrohaNode {
   /**
    * Factory
    *
-   * @param port {number}
+   * @param ip {string} IP to listen on
+   * @param port {number} Port to listen on, usually 10001
    */
-  static make (port = PORT_IROHA_INTERNAL) {
+  static make (ip, port) {
     const _p = Math.floor(port)
     if (_p < 1025 || _p > 65535) {
       throw new Error('invalid port')
     }
 
-    return new IrohaNode(_p)
-  }
-
-  /**
-   * @param port {number}
-   * @private
-   */
-  constructor (port) {
-    this._mapNode = new Map([
-      ['testnet-a', 'zmkwwarruox7i5ditmltnf4d36b7lwadk2egrcl3jhptpto4fplq.b32.i2p'],
-      ['testnet-b', 'txbz37jbvotktzyjkzaauqzdzlpbkaqy7t5pml46mtv6pvlc2zmq.b32.i2p'],
-      ['testnet-c', 'so2tld2bo4ghaydnz2fc2clclr4p5rw5ym5sby7drobzcnz57n6q.b32.i2p']
-    ])
-
-    this._port = port
-    this._id = 1
-    this._socket = new Map()
-
-    this._createServer('172.18.1.1')
-    this._createServer('172.18.2.1')
-    this._createServer('172.18.3.1')
+    return new IrohaNode(ip, _p)
   }
 
   /**
    * @param ip {string}
+   * @param port {number}
    * @private
    */
-  _createServer (ip) {
+  constructor (ip, port) {
+    this._mapNode = new Map([
+      ['testnet-a', 'aqloytaep2ishherz6opvcqlavel7bfztouwxv4oxev6gb2x2w6a.b32.i2p'],
+      ['testnet-b', '3idwkryr4j2velfmcom5nuhg3353dd3omjo24nrdqb2oz72xkyoa.b32.i2p'],
+      ['testnet-c', 'pnbtl2an4a43xqxdo4znfuqjsoetmugwpxoags4n2qc5aj5cblqq.b32.i2p']
+    ])
+
+    this._ip = ip
+    this._port = port
+
+    this._id = 1
+    this._socket = new Map()
+
+    this._waitForSocks()
+  }
+
+  /**
+   * @private
+   */
+  _waitForSocks () {
+    IrohaNode._getSocksClient('diva.i2p')
+      .then(() => {
+        this._createServer()
+      })
+      .catch(() => {
+        Logger.trace('Socks not ready yet')
+        setTimeout(() => { this._waitForSocks() }, 10000)
+      })
+  }
+
+  /**
+   * @private
+   */
+  _createServer () {
     net.createServer((c) => {
       let stream = null
       const id = this._id++
-      Logger.trace('ID: ' + id + ' - Size: ' + this._socket.size)
+
+      // reuse of id's
+      if (this._id > Math.pow(this._socket.size + 1, 3)) {
+        this._id = 1
+      }
 
       c.on('data', (data) => {
         let socket = null
@@ -74,7 +91,6 @@ export class IrohaNode {
         if (match && match[1]) {
           Logger.trace('...looking for ' + match[1])
           if (this._mapNode.has(match[1])) {
-            Logger.trace('Getting SocksClient for: ' + this._mapNode.get(match[1]))
             IrohaNode._getSocksClient(this._mapNode.get(match[1])).then((sock) => {
               socket = sock
               this._socket.set(id, socket)
@@ -83,11 +99,9 @@ export class IrohaNode {
                 socket.destroy()
               })
               socket.on('end', (data) => {
-                Logger.trace('SocksClient onEnd, ' + id)
                 data ? c.end(data) : c.end()
               })
               socket.on('close', () => {
-                Logger.trace('SocksClient onClose, ' + id)
                 this._socket.delete(id)
               })
               socket.on('data', (data) => {
@@ -101,19 +115,20 @@ export class IrohaNode {
               }
               stream = null
             })
+              .catch((error) => {
+                Logger.trace('Socks Error').error(error)
+              })
           } else {
             c.destroy()
           }
         }
       })
       c.on('end', (data) => {
-        Logger.trace('C onEnd, ' + id)
         if (this._socket.has(id)) {
           data ? this._socket.get(id).end(data) : this._socket.get(id).end()
         }
       })
       c.on('close', () => {
-        Logger.trace('C onClose, ' + id)
         if (this._socket.has(id)) {
           const socket = this._socket.get(id)
           socket.destroy()
@@ -124,21 +139,22 @@ export class IrohaNode {
         c.destroy()
       })
     })
-      .listen(this._port, ip, () => {
-        Logger.info(ip + ':' + this._port + ' listening')
+      .listen(this._port, this._ip, () => {
+        Logger.info(this._ip + ':' + this._port + ' listening')
       })
   }
 
   /**
    * @param addressB32
    * @returns {Promise<Socket>}
+   * @throws {Error} If Socks connection fails
    * @private
    */
   static async _getSocksClient (addressB32) {
     const options = {
       proxy: {
         port: 4445,
-        host: 'localhost', // ipv4 or ipv6 or hostname
+        host: 'i2p',
         type: 5 // Proxy version (4 or 5)
       },
       destination: {
@@ -147,13 +163,8 @@ export class IrohaNode {
       },
       command: 'connect'
     }
-    try {
-      const info = await SocksClient.createConnection(options)
-      return info.socket
-    } catch (error) {
-      Logger.error(error)
-      throw new Error(error)
-    }
+    const info = await SocksClient.createConnection(options)
+    return info.socket
   }
 }
 

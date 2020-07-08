@@ -7,8 +7,8 @@ module.exports = {
 
       env: {
         NODE_ENV: 'development',
-        IDENT: process.env.IDENT || 'testnet-a',
-        PORT_IROHA_INTERNAL: process.env.PORT_IROHA_INTERNAL || 10001,
+        IP: process.env.IP || '0.0.0.0',
+        PORT: process.env.PORT || 10001,
         LOG_LEVEL: 'trace'
       }
     }

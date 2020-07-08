@@ -10,6 +10,7 @@ PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${PROJECT_PATH}/../
 
 # @TODO replace environment variables with arguments, like: run.sh --name=my-ip2d
+IP_IROHA_PROXY=${IP_IROHA_PROXY:?err}
 PORT_POSTGRES=${PORT_POSTGRES:-5032}
 PORT_INTERNAL=${PORT_INTERNAL:-10001}
 PORT_TORII=${PORT_TORII:-50051}
@@ -26,6 +27,6 @@ docker run \
   -p 127.0.0.1:${PORT_TORII}:50051 \
   -v ${NAME_VOLUME}:/opt/iroha \
   --env NAME_KEY=${NAME_KEY} \
+  --env IP_IROHA_PROXY=${IP_IROHA_PROXY} \
   --name=${NAME} \
-  --hostname=iroha \
   divax/iroha:latest

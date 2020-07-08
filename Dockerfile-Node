@@ -1,0 +1,24 @@
+FROM node:lts-alpine
+
+LABEL author="Konrad Baechler <konrad@diva.exchange>" \
+  maintainer="Konrad Baechler <konrad@diva.exchange>" \
+  name="diva-iroha-node-proxy-i2p" \
+  description="Distributed digital value exchange upholding security, reliability and privacy" \
+  url="https://diva.exchange"
+
+COPY app /home/node/app
+COPY package.* /home/node/
+COPY ecosystem.config.js /home/node/
+COPY entrypoint-node.sh /
+
+RUN cd /home/node/ \
+  && npm install -g pm2 \
+  && npm install --production \
+  && chmod +x /entrypoint-node.sh
+
+# iroha proxy port
+EXPOSE 10001
+
+VOLUME [ "/home/node/" ]
+WORKDIR "/home/node/"
+ENTRYPOINT ["/entrypoint-node.sh"]

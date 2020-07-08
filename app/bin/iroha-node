@@ -9,4 +9,4 @@
 
 import { IrohaNode } from '../src/iroha-node'
 
-IrohaNode.make(process.env.PORT_IROHA_INTERNAL || 10001)
+IrohaNode.make(process.env.IP || '0.0.0.0', process.env.PORT || 10001)

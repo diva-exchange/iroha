@@ -7,7 +7,7 @@
 set -e
 
 NAME_KEY=${NAME_KEY:-testnet-a}
-IP_IROHA_PROXY=${IP_IROHA_PROXY:?err}
+IP_IROHA_NODE=${IP_IROHA_NODE:?err}
 
 # networking
 cat </resolv.conf >/etc/resolv.conf
@@ -16,7 +16,7 @@ dnsmasq -a 127.0.1.1 \
   --no-hosts \
   --local-service \
   --address=/${NAME_KEY}.diva.local/127.0.0.1 \
-  --address=/diva.local/${IP_IROHA_PROXY}
+  --address=/diva.local/${IP_IROHA_NODE}
 
 if [[ ! -f postgres.lock ]]
 then
@@ -40,5 +40,5 @@ else
 fi
 
 # start the Iroha Blockchain
-/wait-for-it.sh ${IP_IROHA_PROXY}:10001 -t 600 -s -- /usr/bin/irohad \
+/wait-for-it.sh ${IP_IROHA_NODE}:10001 -t 600 -s -- /usr/bin/irohad \
   --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY}

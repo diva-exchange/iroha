@@ -8,6 +8,7 @@ set -e
 
 NAME_KEY=${NAME_KEY:-testnet-a}
 IP_IROHA_NODE=${IP_IROHA_NODE:?err}
+TYPE=${TYPE:-P2P}
 
 # networking
 cat </resolv.conf >/etc/resolv.conf
@@ -39,6 +40,9 @@ else
   /wait-for-it.sh localhost:5432 -t 30 -s -- /bin/true
 fi
 
+# relax
+sleep 30
+
 # start the Iroha Blockchain
-/wait-for-it.sh ${IP_IROHA_NODE}:10001 -t 600 -s -- /usr/bin/irohad \
-  --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY}
+/wait-for-it.sh ${IP_IROHA_NODE}:10001 -t 30 -s -- /usr/bin/irohad \
+  --config /opt/iroha/data/config-${TYPE}.json --keypair_name ${NAME_KEY}

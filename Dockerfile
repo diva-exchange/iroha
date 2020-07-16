@@ -15,6 +15,7 @@ COPY entrypoint.sh wait-for-it.sh /
 RUN apt-get update \
   && apt-get install -y \
     dnsmasq \
+    pwgen \
     postgresql-10 \
   && mv /var/lib/postgresql/10/main/ /opt/iroha/data/postgres \
   && chmod +x /entrypoint.sh /wait-for-it.sh

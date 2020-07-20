@@ -26,11 +26,15 @@ cat </pg_hba.conf >/etc/postgresql/10/main/pg_hba.conf
 service postgresql start
 /wait-for-it.sh localhost:5432 -t 30 -s -- /bin/true
 
-# update the postgres password
-IROHA_PASSWORD=`pwgen -s 32 1`
-su postgres -c "psql -c \"ALTER USER postgres PASSWORD '${IROHA_PASSWORD}';\""
-sed -i "s/\$POSTGRES_PASSWORD/${IROHA_PASSWORD}/" /opt/iroha/data/config-${TYPE}.json
-IROHA_PASSWORD=""
+if [[ ! -f /iroha-password.done ]]
+then
+  # update the postgres password
+  IROHA_PASSWORD=`pwgen -s 32 1`
+  su postgres -c "psql -c \"ALTER USER postgres PASSWORD '${IROHA_PASSWORD}';\""
+  sed -i "s/\$POSTGRES_PASSWORD/${IROHA_PASSWORD}/" /opt/iroha/data/config-${TYPE}.json
+  IROHA_PASSWORD=""
+  touch /iroha-password.done
+fi
 
 # start the Iroha Blockchain
 /wait-for-it.sh ${IP_IROHA_NODE}:10001 -t 30 -s -- /usr/bin/irohad \
@@ -39,8 +43,12 @@ IROHA_PASSWORD=""
 # relax - wait until iroha database gets created
 sleep 10
 
-# create a read-only user: "explorer", password "explorer" - a public access to the world state of Iroha
-su postgres -c "psql -d iroha_data -f /create-read-only-explorer.sql"
+if [[ ! -f /create-explorer.done ]]
+then
+  # create a read-only user: "explorer", password "explorer" - a public access to the world state of Iroha
+  su postgres -c "psql -d iroha_data -f /create-read-only-explorer.sql"
+  touch /create-explorer.done
+fi
 
 # catch SIGINT and SIGTERM
 trap "pkill -SIGTERM irohad ; exit 0" SIGTERM SIGINT

@@ -4,6 +4,8 @@ The blockchain backend of _diva_ is based on Hyperledger/Iroha. See here: https:
 
 ## Contact the Developers
 
+On [DIVA.EXCHANGE](https://www.diva.exchange) you'll find various options to get in touch with the team. 
+
 Talk to us via Telegram [https://t.me/diva_exchange_chat_de]() (English or German).
 
 ## Donations

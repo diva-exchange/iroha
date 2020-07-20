@@ -43,12 +43,8 @@ fi
 # relax - wait until iroha database gets created
 sleep 10
 
-if [[ ! -f /create-explorer.done ]]
-then
-  # create a read-only user: "explorer", password "explorer" - a public access to the world state of Iroha
-  su postgres -c "psql -d iroha_data -f /create-read-only-explorer.sql"
-  touch /create-explorer.done
-fi
+# create a read-only user: "explorer", password "explorer" - a public access to the world state of Iroha
+su postgres -c "psql -d iroha_data -f /create-read-only-explorer.sql"
 
 # catch SIGINT and SIGTERM
 trap "pkill -SIGTERM irohad ; exit 0" SIGTERM SIGINT

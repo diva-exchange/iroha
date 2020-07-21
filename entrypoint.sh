@@ -36,12 +36,14 @@ then
   touch /iroha-password.done
 fi
 
-# start the Iroha Blockchain
-/wait-for-it.sh ${IP_IROHA_NODE}:10001 -t 30 -s -- /usr/bin/irohad \
-  --config /opt/iroha/data/config-${TYPE}.json --keypair_name ${NAME_KEY} 2>&1 &
-
 # relax - wait until iroha database gets created
 sleep 30
+
+# start the Iroha Blockchain
+/usr/bin/irohad --config /opt/iroha/data/config-${TYPE}.json --keypair_name ${NAME_KEY} 2>&1 &
+
+# relax - wait until iroha database gets created
+sleep 10
 
 # create a read-only user: "explorer", password "explorer" - a public access to the world state of Iroha
 su postgres -c "psql -d iroha_data -f /create-read-only-explorer.sql"

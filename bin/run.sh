@@ -10,7 +10,7 @@ PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${PROJECT_PATH}/../
 
 # @TODO replace environment variables with arguments, like: run.sh --name=my-ip2d
-IP_IROHA_NODE=${IP_IROHA_NODE:?err}
+IP_IROHA_NODE=${IP_IROHA_NODE:-"127.0.0.1"}
 PORT_POSTGRES=${PORT_POSTGRES:-5032}
 PORT_INTERNAL=${PORT_INTERNAL:-10001}
 PORT_TORII=${PORT_TORII:-50051}

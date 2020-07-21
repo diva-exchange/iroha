@@ -36,7 +36,7 @@ then
   touch /iroha-password.done
 fi
 
-# relax - wait until iroha database gets created
+# be patient: enable a proxy in the local network to get ready... (P2P, I2P)
 sleep 30
 
 # start the Iroha Blockchain

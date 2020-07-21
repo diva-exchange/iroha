@@ -41,7 +41,7 @@ fi
   --config /opt/iroha/data/config-${TYPE}.json --keypair_name ${NAME_KEY} 2>&1 &
 
 # relax - wait until iroha database gets created
-sleep 10
+sleep 30
 
 # create a read-only user: "explorer", password "explorer" - a public access to the world state of Iroha
 su postgres -c "psql -d iroha_data -f /create-read-only-explorer.sql"

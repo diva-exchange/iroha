@@ -11,7 +11,7 @@ _Important:_ these instructions are suitable for a testnet in a development envi
 Pull the image using docker:
 `docker pull divax/iroha:latest`
 
-Now execute in a Linux shell (accessing docker needs root rights):
+Now execute in a Linux shell (adapt the environment variables according to your needs):
 ```
 IP_IROHA_NODE=${IP_IROHA_NODE:-"0.0.0.0"}
 PORT_POSTGRES=${PORT_POSTGRES:-5032}
@@ -35,7 +35,7 @@ docker run \
   divax/iroha:latest
 ```
 
-On other operating systems: adapt the environment variables according to your needs. 
+
 
 ### Source Code
 

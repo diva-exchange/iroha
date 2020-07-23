@@ -36,8 +36,8 @@ then
   touch /iroha-password.done
 fi
 
-# be patient: enable a proxy in the local network to get ready... (P2P, I2P)
-sleep 30
+# be patient: enable a potential proxy in the local network to get ready... (P2P, I2P)
+sleep 10
 
 # start the Iroha Blockchain
 /usr/bin/irohad --config /opt/iroha/data/config-${TYPE}.json --keypair_name ${NAME_KEY} 2>&1 &
@@ -49,7 +49,7 @@ sleep 10
 su postgres -c "psql -d iroha_data -f /create-read-only-explorer.sql"
 
 # catch SIGINT and SIGTERM
-trap "pkill -SIGTERM irohad ; exit 0" SIGTERM SIGINT
+trap "pkill -SIGTERM irohad ; service postgresql stop ; sleep 5 ; exit 0" SIGTERM SIGINT
 
 # wait forever
 while true

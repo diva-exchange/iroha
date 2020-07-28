@@ -14,6 +14,7 @@ COPY entrypoint.sh wait-for-it.sh /
 
 RUN apt-get update \
   && apt-get install -y \
+    curl \
     dnsmasq \
     pwgen \
     postgresql-10 \

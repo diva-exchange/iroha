@@ -22,8 +22,8 @@
 NAME_KEY=${NAME_KEY:?err}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:?err}
 IP_IROHA_NODE=${IP_IROHA_NODE:?err}
+IP_CONTAINER=${IP_CONTAINER:?err}
 TYPE=${TYPE:-"P2P"}
-IP=${IP:-`hostname -I | cut -d' ' -f1`}
 
 # create a new peer, if not available
 if [[ ! -f ${NAME_KEY}.priv || ! -f ${NAME_KEY}.pub ]]
@@ -34,7 +34,7 @@ then
   chmod 0644 ${NAME_KEY}.pub
 fi
 
-echo "Starting Iroha ${NAME_KEY} on ${IP}"
+echo "Starting Iroha ${NAME_KEY} on ${IP_CONTAINER}"
 
 # networking configuration
 cat </resolv.conf >/etc/resolv.conf
@@ -47,7 +47,8 @@ dnsmasq -RnD -a 127.0.1.1 \
 
 # wait for a potential proxy and register at it
 /wait-for-it.sh ${IP_IROHA_NODE}:10002 -t 10
-curl --silent -f -I http://${IP_IROHA_NODE}:10002/register?ip=${IP}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY}
+curl --silent -f -I \
+  http://${IP_IROHA_NODE}:10002/register?ip=${IP_CONTAINER}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY}
 
 # postgres configuration
 cat </postgresql.conf >/etc/postgresql/10/main/postgresql.conf
@@ -74,7 +75,8 @@ fi
 
 # catch SIGINT and SIGTERM
 trap "\
-  curl --silent -f -I http://${IP_IROHA_NODE}:10002/close?ip=${IP}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY} ;\
+  curl --silent -f -I \
+    http://${IP_IROHA_NODE}:10002/close?ip=${IP_CONTAINER}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY} ;\
   pkill -SIGTERM irohad ;\
   service postgresql stop ;\
   sleep 5 ;\

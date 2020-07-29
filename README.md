@@ -6,36 +6,68 @@ _Important:_ these instructions are suitable for a testnet in a development envi
 
 ## Get Started
 
+DIVA.EXCHANGE offers preconfigured packages to start or join  an Iroha testnet: 
+https://codeberg.org/diva.exchange/diva-dockerized
+
+For a beginner it's probably easier to use the preconfigured package. The instructions below show how to sta
+
 ### Docker
 
 Pull the image using docker:
 `docker pull divax/iroha:latest`
 
-Now execute in a Linux shell (adapt the environment variables according to your needs):
-```
-IP_IROHA_NODE=${IP_IROHA_NODE:-"0.0.0.0"}
-PORT_POSTGRES=${PORT_POSTGRES:-5032}
-PORT_INTERNAL=${PORT_INTERNAL:-10001}
-PORT_TORII=${PORT_TORII:-50051}
+Create a new bash/shell script (adapt the environment variables according to your needs):
 
-NAME_KEY=${NAME_KEY:-testnet-a}
-NAME=${NAME:-iroha-${NAME_KEY}}
-NAME_VOLUME=${NAME_VOLUME:-${NAME}}
+```
+#!/usr/bin/env bash
+
+# -e  Exit immediately if a simple command exits with a non-zero status
+set -e
+
+# @TODO replace environment variables with arguments, like: run.sh --id=2
+ID_INSTANCE=${ID_INSTANCE:-${1:-1}}
+IP_CONTAINER="172.19.${ID_INSTANCE}.10"
+IP_IROHA_NODE="172.19.${ID_INSTANCE}.11"
+SUBNET="172.19.${ID_INSTANCE}.0/24"
+GATEWAY="172.19.${ID_INSTANCE}.1"
+
+BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
+NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
+NAME=iroha-${ID_INSTANCE}
+
+# create the network
+NETWORK_NAME=iroha-net-${ID_INSTANCE}
+[[ $(docker network inspect ${NETWORK_NAME} 2>/dev/null | wc -l) > 1 ]] || \
+  docker network create \
+    --driver=bridge \
+    --subnet=${SUBNET} \
+    --gateway=${GATEWAY} \
+    ${NETWORK_NAME}
 
 # start the container
 docker run \
   -d \
-  -p 127.0.0.1:${PORT_POSTGRES}:5432 \
-  -p 127.0.0.1:${PORT_INTERNAL}:10001 \
-  -p 127.0.0.1:${PORT_TORII}:50051 \
-  -v ${NAME_VOLUME}:/opt/iroha \
+  -p 127.19.${ID_INSTANCE}.1:5432:5432 \
+  -p 127.19.${ID_INSTANCE}.1:10001:10001 \
+  -p 127.19.${ID_INSTANCE}.1:50051:50051 \
+  -v ${NAME}:/opt/iroha \
+  --env BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK} \
   --env NAME_KEY=${NAME_KEY} \
   --env IP_IROHA_NODE=${IP_IROHA_NODE} \
+  --env IP_CONTAINER=${IP_CONTAINER} \
   --name=${NAME} \
+  --network=${NETWORK_NAME} \
+  --ip=${IP_CONTAINER} \
+  --rm \
   divax/iroha:latest
+
+echo "Running ${NAME_KEY} on blockchain network ${BLOCKCHAIN_NETWORK}"
+
 ```
 
+Execute the above shell script in your environment.
 
+A new network and a new container will be created. Explore it using the docker tools, like `docker ps -a` or `docker inspect some-name`. To stop and remove the container and/or network, use the docker tools.
 
 ### Source Code
 
@@ -53,9 +85,17 @@ Now you can either start an Iroha container using the existing configuration (wi
 
 Make sure you are located in the `iroha` folder. To access Docker you need root rights. This will start a container:
 
-`sudo ./bin/run.sh`
+```
+sudo ./bin/start.sh
+```
  
  Now you have an Iroha Container up and running. Important: this uses preconfigured, well-known (publicly available) private keys. Use it for testing/development only.
+
+#### Stop the Preconfigured Container 
+
+```
+sudo ./bin/halt.sh
+```
  
 #### Build your Own  
 
@@ -64,7 +104,6 @@ Within the folder `data-genesis` you can configure your own Genesis Block. Execu
 Then, based on your own Genesis Block, build your own Docker Image: `./bin/build.sh`.
 
 After building, run your container using `./bin/run.sh`. 
-
 
 ## Contact the Developers
 

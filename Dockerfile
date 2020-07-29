@@ -13,7 +13,7 @@ COPY database/* /
 COPY entrypoint.sh wait-for-it.sh /
 
 RUN apt-get update \
-  && apt-get install -y \
+  && apt-get -y install \
     curl \
     dnsmasq \
     pwgen \

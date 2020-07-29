@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 #
-# Author/Maintainer: konrad@diva.exchange
+# Copyright (C) 2020 diva.exchange
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Author/Maintainer: Konrad Bächler <konrad@diva.exchange>
 #
 
 # -e  Exit immediately if a simple command exits with a non-zero status
@@ -10,13 +26,13 @@ PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${PROJECT_PATH}/../
 
 # @TODO replace environment variables with arguments, like: run.sh --name=my-iroha
-IP_IROHA_NODE=${IP_IROHA_NODE:-"127.0.0.1"}
+IP_IROHA_NODE="127.0.0.1"
 PORT_POSTGRES=${PORT_POSTGRES:-5032}
 PORT_INTERNAL=${PORT_INTERNAL:-10001}
 PORT_TORII=${PORT_TORII:-50051}
 
-NAME_KEY=${NAME_KEY:-""}
-BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-"testnet"}
+BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-"tn-"`pwgen -s -A -0 8 1`}
+NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-`pwgen -s -A 8 1`}
 NAME=${NAME:-iroha-${NAME_KEY}}
 NAME_VOLUME=${NAME_VOLUME:-${NAME}}
 
@@ -27,8 +43,8 @@ docker run \
   -p 127.0.0.1:${PORT_INTERNAL}:10001 \
   -p 127.0.0.1:${PORT_TORII}:50051 \
   -v ${NAME_VOLUME}:/opt/iroha \
-  --env NAME_KEY=${NAME_KEY} \
   --env BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK} \
+  --env NAME_KEY=${NAME_KEY} \
   --env IP_IROHA_NODE=${IP_IROHA_NODE} \
   --name=${NAME} \
   divax/iroha:latest

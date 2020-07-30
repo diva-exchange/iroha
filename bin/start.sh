@@ -27,23 +27,11 @@ cd ${PROJECT_PATH}
 
 # @TODO replace environment variables with arguments, like: run.sh --id=2
 ID_INSTANCE=${ID_INSTANCE:-${1:-1}}
-IP_CONTAINER="172.19.${ID_INSTANCE}.10"
-IP_IROHA_NODE="172.19.${ID_INSTANCE}.11"
-SUBNET="172.19.${ID_INSTANCE}.0/24"
-GATEWAY="172.19.${ID_INSTANCE}.1"
+HOST_IROHA_NODE=${HOST_IROHA_NODE:-${2:-"iroha-node${ID_INSTANCE}"}}
 
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
-NAME=iroha-${ID_INSTANCE}
-
-# create the network
-NETWORK_NAME=iroha-net-${ID_INSTANCE}
-[[ $(docker network inspect ${NETWORK_NAME} 2>/dev/null | wc -l) > 1 ]] || \
-  docker network create \
-    --driver=bridge \
-    --subnet=${SUBNET} \
-    --gateway=${GATEWAY} \
-    ${NETWORK_NAME}
+NAME=iroha${ID_INSTANCE}
 
 # start the container
 docker run \
@@ -54,12 +42,8 @@ docker run \
   -v ${NAME}:/opt/iroha \
   --env BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK} \
   --env NAME_KEY=${NAME_KEY} \
-  --env IP_IROHA_NODE=${IP_IROHA_NODE} \
-  --env IP_CONTAINER=${IP_CONTAINER} \
+  --env HOST_IROHA_NODE=${HOST_IROHA_NODE} \
   --name=${NAME} \
-  --network=${NETWORK_NAME} \
-  --ip=${IP_CONTAINER} \
-  --rm \
   divax/iroha:latest
 
 echo "Running ${NAME_KEY} on blockchain network ${BLOCKCHAIN_NETWORK}"

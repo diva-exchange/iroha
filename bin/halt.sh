@@ -24,18 +24,13 @@ cd ${PROJECT_PATH}
 
 # @TODO replace environment variables with arguments, like: run.sh --id=2
 ID_INSTANCE=${ID_INSTANCE:-${1:-1}}
-NAME=iroha-${ID_INSTANCE}
+NAME=iroha${ID_INSTANCE}
 
 # stop the container
 echo "Removing container..."
 docker stop ${NAME}
+docker rm ${NAME}
 
 # remove the volume
 echo "Removing volume..."
 docker volume rm ${NAME} -f
-
-# remove the network
-echo "Removing network..."
-NETWORK_NAME=iroha-net-${ID_INSTANCE}
-[[ $(docker network inspect ${NETWORK_NAME} 2>/dev/null | wc -l) > 1 ]] && \
-  docker network rm ${NETWORK_NAME}

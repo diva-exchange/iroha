@@ -21,9 +21,18 @@
 
 NAME_KEY=${NAME_KEY:?err}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:?err}
-IP_IROHA_NODE=${IP_IROHA_NODE:?err}
-IP_CONTAINER=${IP_CONTAINER:?err}
+HOST_IROHA_NODE=${HOST_IROHA_NODE:?err}
 TYPE=${TYPE:-"P2P"}
+
+IP_CONTAINER=`hostname -I | cut -d' ' -f1`
+IP_IROHA_NODE="127.0.0.1"
+
+# wait for a potential proxy
+if host ${HOST_IROHA_NODE}
+then
+  /wait-for-it.sh ${HOST_IROHA_NODE}:10002 -t 10
+  IP_IROHA_NODE=`host ${HOST_IROHA_NODE} | cut -d' ' -f4`
+fi
 
 # create a new peer, if not available
 if [[ ! -f ${NAME_KEY}.priv || ! -f ${NAME_KEY}.pub ]]
@@ -35,18 +44,17 @@ then
 fi
 
 echo "Starting Iroha ${NAME_KEY} on ${IP_CONTAINER}"
+echo "Related Iroha Node ${HOST_IROHA_NODE} on ${IP_IROHA_NODE}"
 
 # networking configuration
 cat </resolv.conf >/etc/resolv.conf
 cat </dnsmasq.conf >/etc/dnsmasq.conf
 dnsmasq -RnD -a 127.0.1.1 \
-  --no-hosts \
   --local-service \
   --address=/${NAME_KEY}.diva.local/127.0.0.1 \
   --address=/diva.local/${IP_IROHA_NODE}
 
-# wait for a potential proxy and register at it
-/wait-for-it.sh ${IP_IROHA_NODE}:10002 -t 10
+# register at proxy
 curl --silent -f -I \
   http://${IP_IROHA_NODE}:10002/register?ip=${IP_CONTAINER}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY}
 

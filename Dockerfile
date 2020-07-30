@@ -14,6 +14,7 @@ COPY entrypoint.sh wait-for-it.sh /
 
 RUN apt-get update \
   && apt-get -y install \
+    bind9-host \
     curl \
     dnsmasq \
     pwgen \

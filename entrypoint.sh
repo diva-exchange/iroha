@@ -21,6 +21,7 @@
 
 NAME_KEY=${NAME_KEY:?err}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:?err}
+IP_ORIGIN=`hostname -I | cut -d' ' -f1`
 IP_PUBLISHED=${IP_PUBLISHED:?err}
 IP_IROHA_NODE=${IP_IROHA_NODE:?err}
 PORT_CONTROL=${PORT_CONTROL:-10002}
@@ -49,7 +50,7 @@ dnsmasq -RnD -a 127.0.1.1 \
 
 # register at proxy
 URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/register"
-URL="${URL}?ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
+URL="${URL}?ip_origin=${IP_ORIGIN}&ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
 
 curl --silent -f -I ${URL}
 

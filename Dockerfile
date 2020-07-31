@@ -14,7 +14,6 @@ COPY entrypoint.sh wait-for-it.sh /
 
 RUN apt-get update \
   && apt-get -y install \
-    bind9-host \
     curl \
     dnsmasq \
     pwgen \
@@ -22,8 +21,8 @@ RUN apt-get update \
   && mv /var/lib/postgresql/10/main/ /opt/iroha/data/postgres \
   && chmod +x /entrypoint.sh /wait-for-it.sh
 
-# postgres, iroha torii
-EXPOSE 5432 50051
+# postgres, iroha internal and iroha torii
+EXPOSE 5432 10001 50051
 
 VOLUME [ "/opt/iroha/" ]
 WORKDIR "/opt/iroha/data/"

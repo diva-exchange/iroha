@@ -42,13 +42,16 @@ echo "Related Iroha Node ${IP_IROHA_NODE}"
 cat </resolv.conf >/etc/resolv.conf
 cat </dnsmasq.conf >/etc/dnsmasq.conf
 dnsmasq -RnD -a 127.0.1.1 \
+  --no-hosts \
   --local-service \
   --address=/${NAME_KEY}.diva.local/127.0.0.1 \
   --address=/diva.local/${IP_IROHA_NODE}
 
 # register at proxy
-curl --silent -f -I \
-  http://${IP_IROHA_NODE}:${PORT_CONTROL}/register?ip=${IP_PUBLISHED}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY}
+URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/register"
+URL="${URL}?ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
+
+curl --silent -f -I ${URL}
 
 # postgres configuration
 cat </postgresql.conf >/etc/postgresql/10/main/postgresql.conf
@@ -76,7 +79,7 @@ fi
 # catch SIGINT and SIGTERM
 trap "\
   curl --silent -f -I \
-    http://${IP_IROHA_NODE}:${PORT_CONTROL}/close?ip=${IP_PUBLISHED}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY} ;\
+    http://${IP_IROHA_NODE}:${PORT_CONTROL}/close?room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY} ;\
   pkill -SIGTERM irohad ;\
   service postgresql stop ;\
   sleep 5 ;\

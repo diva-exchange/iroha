@@ -19,13 +19,14 @@
 # Author/Maintainer: Konrad Bächler <konrad@diva.exchange>
 #
 
+TYPE=${TYPE:-"P2P"}
 NAME_KEY=${NAME_KEY:?err}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:?err}
 IP_ORIGIN=`hostname -I | cut -d' ' -f1`
 IP_PUBLISHED=${IP_PUBLISHED:?err}
 IP_IROHA_NODE=${IP_IROHA_NODE:?err}
-PORT_CONTROL=${PORT_CONTROL:-10002}
-TYPE=${TYPE:-"P2P"}
+PORT_CONTROL=${PORT_CONTROL:?err}
+PORT_IROHA_PROXY=${PORT_IROHA_PROXY:?err}
 
 # create a new peer, if not available
 if [[ ! -f ${NAME_KEY}.priv || ! -f ${NAME_KEY}.pub ]]
@@ -48,11 +49,16 @@ dnsmasq -RnD -a 127.0.1.1 \
   --address=/${NAME_KEY}.diva.local/127.0.0.1 \
   --address=/diva.local/${IP_IROHA_NODE}
 
+# wait for the control port of a potential proxy
+/wait-for-it.sh ${IP_IROHA_NODE}:${PORT_CONTROL} -t 10
+
 # register at proxy
 URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/register"
 URL="${URL}?ip_origin=${IP_ORIGIN}&ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
-
 curl --silent -f -I ${URL}
+
+# wait for a potential proxy
+/wait-for-it.sh ${IP_IROHA_NODE}:${PORT_IROHA_PROXY} -t 10
 
 # postgres configuration
 cat </postgresql.conf >/etc/postgresql/10/main/postgresql.conf
@@ -71,16 +77,14 @@ then
   touch /iroha-password.done
 fi
 
-# wait for a potential proxy
-/wait-for-it.sh ${IP_IROHA_NODE}:10001 -t 10
-
 # start the Iroha Blockchain
 /usr/bin/irohad --config /opt/iroha/data/config-${TYPE}.json --keypair_name ${NAME_KEY} 2>&1 &
 
 # catch SIGINT and SIGTERM
+URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/close"
+URL="${URL}?ip_origin=${IP_ORIGIN}&ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
 trap "\
-  curl --silent -f -I \
-    http://${IP_IROHA_NODE}:${PORT_CONTROL}/close?room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY} ;\
+  curl --silent -f -I ${URL} ;\
   pkill -SIGTERM irohad ;\
   service postgresql stop ;\
   sleep 5 ;\

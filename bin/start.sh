@@ -53,7 +53,7 @@ docker run \
   --env IP_PUBLISHED=${IP_PUBLISHED} \
   --env IP_IROHA_NODE=${IP_IROHA_NODE} \
   --env PORT_CONTROL=${PORT_CONTROL} \
-  --env PORT_IROHA_PROXY=${PORT_IROHA_PROXY}
+  --env PORT_IROHA_PROXY=${PORT_IROHA_PROXY} \
   --name ${NAME} \
   --network bridge \
   divax/iroha:latest

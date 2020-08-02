@@ -24,45 +24,42 @@ Create a new bash/shell script (adapt the environment variables according to you
 # -e  Exit immediately if a simple command exits with a non-zero status
 set -e
 
-# @TODO replace environment variables with arguments, like: run.sh --id=2
-ID_INSTANCE=${ID_INSTANCE:-${1:-1}}
-IP_CONTAINER="172.19.${ID_INSTANCE}.10"
-IP_IROHA_NODE="172.19.${ID_INSTANCE}.11"
-SUBNET="172.19.${ID_INSTANCE}.0/24"
-GATEWAY="172.19.${ID_INSTANCE}.1"
+PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
+cd ${PROJECT_PATH}
 
+ID_INSTANCE=${ID_INSTANCE:-${1:-1}}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
-NAME=iroha-${ID_INSTANCE}
+NAME=iroha${ID_INSTANCE}
 
-# create the network
-NETWORK_NAME=iroha-net-${ID_INSTANCE}
-[[ $(docker network inspect ${NETWORK_NAME} 2>/dev/null | wc -l) > 1 ]] || \
-  docker network create \
-    --driver=bridge \
-    --subnet=${SUBNET} \
-    --gateway=${GATEWAY} \
-    ${NETWORK_NAME}
+# bridge IP
+IP_IROHA_NODE=`ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+'`
+PORT_CONTROL=${PORT_CONTROL:-10002}
+PORT_IROHA_PROXY=${PORT_IROHA_PROXY:-10001}
+
+IP_PUBLISHED=${IP_PUBLISHED:-127.19.${ID_INSTANCE}.1}
+PORT_EXPOSE_POSTGRES=${PORT_EXPOSE_POSTGRES:-10032}
+PORT_EXPOSE_IROHA_INTERNAL=${PORT_EXPOSE_IROHA_INTERNAL:-10011}
+PORT_EXPOSE_IROHA_TORII=${PORT_EXPOSE_IROHA_TORII:-10051}
 
 # start the container
 docker run \
   -d \
-  -p 127.19.${ID_INSTANCE}.1:5432:5432 \
-  -p 127.19.${ID_INSTANCE}.1:10001:10001 \
-  -p 127.19.${ID_INSTANCE}.1:50051:50051 \
+  -p ${IP_PUBLISHED}:${PORT_EXPOSE_POSTGRES}:5432 \
+  -p ${IP_PUBLISHED}:${PORT_EXPOSE_IROHA_INTERNAL}:10001 \
+  -p ${IP_PUBLISHED}:${PORT_EXPOSE_IROHA_TORII}:50051 \
   -v ${NAME}:/opt/iroha \
   --env BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK} \
   --env NAME_KEY=${NAME_KEY} \
+  --env IP_PUBLISHED=${IP_PUBLISHED} \
   --env IP_IROHA_NODE=${IP_IROHA_NODE} \
-  --env IP_CONTAINER=${IP_CONTAINER} \
-  --name=${NAME} \
-  --network=${NETWORK_NAME} \
-  --ip=${IP_CONTAINER} \
-  --rm \
+  --env PORT_CONTROL=${PORT_CONTROL} \
+  --env PORT_IROHA_PROXY=${PORT_IROHA_PROXY} \
+  --name ${NAME} \
+  --network bridge \
   divax/iroha:latest
 
 echo "Running ${NAME_KEY} on blockchain network ${BLOCKCHAIN_NETWORK}"
-
 ```
 
 Execute the above shell script in your environment.
@@ -103,7 +100,7 @@ Within the folder `data-genesis` you can configure your own Genesis Block. Execu
 
 Then, based on your own Genesis Block, build your own Docker Image: `./bin/build.sh`.
 
-After building, run your container using `./bin/run.sh`. 
+After building, run your container using `./bin/start.sh`. 
 
 ## Contact the Developers
 

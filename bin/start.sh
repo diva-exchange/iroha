@@ -25,7 +25,7 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
 cd ${PROJECT_PATH}
 
-# @TODO replace environment variables with arguments, like: run.sh --id=2
+# @TODO replace environment variables with arguments, like: start.sh --id=2
 ID_INSTANCE=${ID_INSTANCE:-${1:-1}}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}

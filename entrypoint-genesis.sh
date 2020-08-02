@@ -4,13 +4,14 @@
 #
 set -e
 
-/wait-for-it.sh postgres_genesis:5432 -t 30 -s --
+/wait-for-it.sh postgres_genesis:5432 -t 30
 
 # re-creating all testnet keys
 iroha-cli -new_account -account_name diva@testnet
 iroha-cli -new_account -account_name testnet-a
 iroha-cli -new_account -account_name testnet-b
 iroha-cli -new_account -account_name testnet-c
+iroha-cli -new_account -account_name genesis-node
 
 DIVA_TESTNET=$(<diva@testnet.pub)
 TESTNET_A=$(<testnet-a.pub)
@@ -25,4 +26,4 @@ irohad \
   --overwrite_ledger \
   --genesis_block genesis.block \
   --config config-genesis.json \
-  --keypair_name node_genesis
+  --keypair_name genesis-node

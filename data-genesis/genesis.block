@@ -52,6 +52,7 @@
                                 "can_get_all_txs",
                                 "can_get_blocks",
                                 "can_get_roles",
+                                "can_get_peers",
                                 "can_read_assets",
                                 "can_receive",
                                 "can_remove_peer",
@@ -102,6 +103,7 @@
                                 "can_get_all_txs",
                                 "can_get_blocks",
                                 "can_get_roles",
+                                "can_get_peers",
                                 "can_read_assets",
                                 "can_receive"
                              ]

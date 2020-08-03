@@ -29,13 +29,20 @@ PORT_CONTROL=${PORT_CONTROL:?err}
 PORT_IROHA_PROXY=${PORT_IROHA_PROXY:?err}
 
 # create a new peer, if not available
+if [[ -f name.key ]]
+then
+  NAME_KEY=$(<name.key)
+fi
+
 if [[ ! -f ${NAME_KEY}.priv || ! -f ${NAME_KEY}.pub ]]
 then
   NAME_KEY=${BLOCKCHAIN_NETWORK}-`pwgen -s -A 12 1`
   /usr/bin/iroha-cli --account_name ${NAME_KEY} --new_account
-  chmod 0600 ${NAME_KEY}.priv
+  chmod 0644 ${NAME_KEY}.priv
   chmod 0644 ${NAME_KEY}.pub
 fi
+PUB_KEY=$(<${NAME_KEY}.pub)
+echo ${NAME_KEY} >name.key
 
 echo "Starting Iroha ${NAME_KEY} on published IP ${IP_PUBLISHED}"
 echo "Related Iroha Node ${IP_IROHA_NODE}"
@@ -82,9 +89,8 @@ fi
 
 # catch SIGINT and SIGTERM
 URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/close"
-URL="${URL}?ip_origin=${IP_ORIGIN}&ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
-trap "\
-  curl --silent -f -I ${URL} ;\
+URL=${URL}'?ip_origin=${IP_ORIGIN}\&ip_iroha=${IP_PUBLISHED}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY}'
+trap "curl --silent -f -I ${URL} ;\
   pkill -SIGTERM irohad ;\
   service postgresql stop ;\
   sleep 5 ;\
@@ -95,6 +101,11 @@ sleep 10
 
 # create a read-only user: "explorer", password "explorer" - a public access to the world state of Iroha
 su postgres -c "psql -d iroha_data -f /create-read-only-explorer.sql"
+
+# add peer
+URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/peer/add"
+URL="${URL}?name=${NAME_KEY}&key=${PUB_KEY}"
+curl --silent -f -I ${URL}
 
 # wait forever
 while true

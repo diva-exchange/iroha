@@ -25,4 +25,4 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${PROJECT_PATH}/../
 
-docker build --pull --no-cache -f Dockerfile --no-cache --force-rm -t divax/iroha:latest .
+sudo docker build --pull --no-cache -f Dockerfile --no-cache --force-rm -t divax/iroha:latest .

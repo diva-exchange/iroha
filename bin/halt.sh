@@ -28,9 +28,9 @@ NAME=iroha${ID_INSTANCE}
 
 # stop the container
 echo "Removing container..."
-docker stop ${NAME}
-docker rm ${NAME}
+sudo docker stop ${NAME}
+sudo docker rm ${NAME}
 
 # remove the volume
 echo "Removing volume..."
-docker volume rm ${NAME} -f
+sudo docker volume rm ${NAME} -f

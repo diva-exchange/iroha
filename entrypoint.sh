@@ -24,6 +24,7 @@ BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:?err}
 IP_ORIGIN=`hostname -I | cut -d' ' -f1`
 IP_PUBLISHED=${IP_PUBLISHED:?err}
 IP_IROHA_NODE=${IP_IROHA_NODE:?err}
+IP_POSTGRES=${IP_POSTGRES:?err}
 PORT_CONTROL=${PORT_CONTROL:?err}
 PORT_IROHA_PROXY=${PORT_IROHA_PROXY:?err}
 
@@ -52,6 +53,7 @@ cat </dnsmasq.conf >/etc/dnsmasq.conf
 dnsmasq -RnD -a 127.0.1.1 \
   --no-hosts \
   --local-service \
+  --address=/postgres.diva.local/${IP_POSTGRES} \
   --address=/${NAME_KEY}.diva.local/127.0.0.1 \
   --address=/diva.local/${IP_IROHA_NODE}
 
@@ -65,13 +67,6 @@ curl --silent -f -I ${URL}
 
 # wait for a potential proxy
 /wait-for-it.sh ${IP_IROHA_NODE}:${PORT_IROHA_PROXY} -t 10
-
-# set the postgres database name
-if [[ ! -f /iroha-database.done ]]
-then
-  sed -i "s/\$IROHA_DATABASE/`pwgen -A -0 12 1`/" /opt/iroha/data/config-${TYPE}.json
-  touch /iroha-database.done
-fi
 
 # start the Iroha Blockchain
 /usr/bin/irohad --config /opt/iroha/data/config-${TYPE}.json --keypair_name ${NAME_KEY} 2>&1 &

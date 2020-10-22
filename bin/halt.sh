@@ -25,11 +25,16 @@ cd ${PROJECT_PATH}
 ID_INSTANCE=${ID_INSTANCE:-${1:-1}}
 NAME=iroha${ID_INSTANCE}
 
-# stop the container
-echo "Removing container..."
-sudo docker stop ${NAME}
-sudo docker rm ${NAME}
+# stop Iroha
+echo "Removing iroha..."
+docker stop ${NAME}
+docker rm ${NAME}
 
-# remove the volume
-echo "Removing volume..."
-sudo docker volume rm ${NAME} -f
+# stop Postgres
+echo "Removing postgres..."
+docker stop iroha-postgres
+docker rm iroha-postgres
+
+# remove unused volumes
+echo "Pruning volumes..."
+docker volume prune -f

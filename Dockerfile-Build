@@ -1,0 +1,50 @@
+#
+# Copyright (C) 2020 diva.exchange
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# Author/Maintainer: Konrad Bächler <konrad@diva.exchange>
+#
+
+FROM debian:bullseye-slim
+
+LABEL author="Konrad Baechler <konrad@diva.exchange>" \
+  maintainer="Konrad Baechler <konrad@diva.exchange>" \
+  name="diva-iroha" \
+  description="Distributed digital value exchange upholding security, reliability and privacy" \
+  url="https://diva.exchange"
+
+ARG tag=1.2.0-rc.2
+ARG threads=4
+
+COPY entrypoint-build.sh /
+
+RUN apt-get update \
+  && apt-get -y --no-install-recommends install \
+    build-essential ninja-build python3 \
+    git ca-certificates tar curl unzip cmake \
+  && cd /root/ \
+#  && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
+#  && source /root/.cargo/env \
+  && git clone --depth 1 --branch $tag https://github.com/hyperledger/iroha.git \
+  && iroha/vcpkg/build_iroha_deps.sh \
+  && vcpkg/bootstrap-vcpkg.sh -useSystemBinaries -disableMetrics \
+  && vcpkg/vcpkg integrate install \
+  && cd iroha \
+#  && cmake -H. -Bbuild -DTESTING=OFF -DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake \
+  && cmake -H. -Bbuild -DTESTING=OFF -DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake -G "Ninja" \
+#  && cmake -H. -Bbuild -DTESTING=OFF -DUSE_LIBURSA=ON -DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake \
+  && cmake --build build --target all -- -j$threads
+
+ENTRYPOINT ["/entrypoint-build.sh"]

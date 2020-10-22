@@ -24,11 +24,11 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${PROJECT_PATH}/../
 
-sudo docker build -f Dockerfile-Genesis --no-cache --force-rm -t divax/iroha-genesis:latest .
+docker build -f Dockerfile-Genesis --no-cache --force-rm -t divax/iroha-genesis:latest .
 
-sudo docker network create iroha-genesis-network
+docker network create iroha-genesis-network
 
-sudo docker run \
+docker run \
   --name postgres_genesis \
   --volume postgres_genesis:/var/lib/postgresql/data/ \
   -e POSTGRES_USER=postgres_genesis \
@@ -38,7 +38,7 @@ sudo docker run \
   postgres:10 \
   -c 'max_prepared_transactions=100'
 
-sudo docker run \
+docker run \
   -d \
   --name iroha_genesis \
   --volume iroha_genesis:/opt/iroha/ \
@@ -62,11 +62,11 @@ chown --reference data data/*
 chmod 0600 data/*.priv
 chmod 0644 data/*.pub
 
-sudo docker stop postgres_genesis
-sudo docker rm postgres_genesis
-sudo docker volume rm postgres_genesis
-sudo docker stop iroha_genesis
-sudo docker rm iroha_genesis
-sudo docker volume rm iroha_genesis
-sudo docker network rm iroha-genesis-network
-sudo docker rmi divax/iroha-genesis:latest
+docker stop postgres_genesis
+docker rm postgres_genesis
+docker volume rm postgres_genesis
+docker stop iroha_genesis
+docker rm iroha_genesis
+docker volume rm iroha_genesis
+docker network rm iroha-genesis-network
+docker rmi divax/iroha-genesis:latest

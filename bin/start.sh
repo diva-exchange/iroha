@@ -40,10 +40,21 @@ PORT_EXPOSE_POSTGRES=${PORT_EXPOSE_POSTGRES:-10032}
 PORT_EXPOSE_IROHA_INTERNAL=${PORT_EXPOSE_IROHA_INTERNAL:-10011}
 PORT_EXPOSE_IROHA_TORII=${PORT_EXPOSE_IROHA_TORII:-10051}
 
-# start the container
+# start postgres
 sudo docker run \
   -d \
-  -p ${IP_PUBLISHED}:${PORT_EXPOSE_POSTGRES}:5432 \
+  -p 10432:5432 \
+  -v iroha-postgres:/var/lib/postgresql/data/ \
+  --env POSTGRES_USER=iroha \
+  --env POSTGRES_PASSWORD=iroha \
+  --network bridge \
+  --name iroha-postgres \
+  postgres:10 \
+  -c 'max_prepared_transactions=100'
+
+# start iroha
+sudo docker run \
+  -d \
   -p ${IP_PUBLISHED}:${PORT_EXPOSE_IROHA_INTERNAL}:10001 \
   -p ${IP_PUBLISHED}:${PORT_EXPOSE_IROHA_TORII}:50051 \
   -v ${NAME}:/opt/iroha \

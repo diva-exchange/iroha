@@ -17,7 +17,7 @@
 # Author/Maintainer: Konrad Bächler <konrad@diva.exchange>
 #
 
-FROM hyperledger/iroha:1.1.3
+FROM debian:bullseye-slim
 
 LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   maintainer="Konrad Baechler <konrad@diva.exchange>" \
@@ -25,10 +25,13 @@ LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   description="Distributed digital value exchange upholding security, reliability and privacy" \
   url="https://diva.exchange"
 
+ARG tag=1.2.0-rc2
+
+COPY build/iroha-cli-$tag /usr/bin/iroha-cli
+COPY build/irohad-$tag /usr/bin/irohad
 COPY data/* /opt/iroha/data/
 COPY blockstore/* /opt/iroha/blockstore/
 COPY network/* /
-COPY database/* /
 COPY entrypoint.sh wait-for-it.sh /
 
 RUN apt-get update \
@@ -36,12 +39,12 @@ RUN apt-get update \
     curl \
     dnsmasq \
     pwgen \
-    postgresql-10 \
-  && mv /var/lib/postgresql/10/main/ /opt/iroha/data/postgres \
+    iproute2 \
+    procps \
   && chmod +x /entrypoint.sh /wait-for-it.sh
 
-# postgres, iroha internal and iroha torii
-EXPOSE 5432 10001 50051
+# iroha internal and iroha torii
+EXPOSE 10001 50051
 
 VOLUME [ "/opt/iroha/" ]
 WORKDIR "/opt/iroha/data/"

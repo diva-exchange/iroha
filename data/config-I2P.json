@@ -6,11 +6,11 @@
   "torii_port" : 50051,
   "internal_port" : 10001,
   "database": {
-    "host": "localhost",
-    "port": 5432,
-    "user": "postgres",
-    "password": "$POSTGRES_PASSWORD",
-    "working database": "iroha_data",
+    "host": "172.17.0.1",
+    "port": 10432,
+    "user": "iroha",
+    "password": "iroha",
+    "working database": "iroha$IROHA_DATABASE",
     "maintenance database": "postgres"
   },
   "max_proposal_size" : 10,

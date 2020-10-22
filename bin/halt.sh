@@ -36,5 +36,6 @@ docker stop iroha-postgres
 docker rm iroha-postgres
 
 # remove unused volumes
-echo "Pruning volumes..."
-docker volume prune -f
+echo "Removing volumes..."
+docker volume rm ${NAME}
+docker volume rm iroha-postgres

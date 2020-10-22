@@ -10,7 +10,7 @@
     "port": 5432,
     "user": "iroha",
     "password": "iroha",
-    "working database": "iroha_data",
+    "working database": "$IROHA_DATABASE",
     "maintenance database": "postgres"
   },
   "max_proposal_size" : 10,

@@ -44,6 +44,7 @@ PORT_EXPOSE_IROHA_TORII=${PORT_EXPOSE_IROHA_TORII:-10051}
 docker run \
   -d \
   -p ${IP_POSTGRES}:5432:5432 \
+  -v iroha-postgres:/var/lib/postgresql/data/ \
   --env POSTGRES_USER=iroha \
   --env POSTGRES_PASSWORD=iroha \
   --network bridge \
@@ -57,6 +58,7 @@ docker run \
   -p ${IP_PUBLISHED}:${PORT_EXPOSE_IROHA_INTERNAL}:10001 \
   -p ${IP_PUBLISHED}:${PORT_EXPOSE_IROHA_TORII}:50051 \
   -v ${NAME}:/opt/iroha \
+  --env ID_INSTANCE=${ID_INSTANCE} \
   --env BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK} \
   --env NAME_KEY=${NAME_KEY} \
   --env IP_PUBLISHED=${IP_PUBLISHED} \

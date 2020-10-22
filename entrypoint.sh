@@ -19,6 +19,7 @@
 #
 
 TYPE=${TYPE:-"P2P"}
+ID_INSTANCE=${ID_INSTANCE:?err}
 NAME_KEY=${NAME_KEY:?err}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:?err}
 IP_ORIGIN=`hostname -I | cut -d' ' -f1`
@@ -67,6 +68,13 @@ curl --silent -f -I ${URL}
 
 # wait for a potential proxy
 /wait-for-it.sh ${IP_IROHA_NODE}:${PORT_IROHA_PROXY} -t 10
+
+# set the postgres database name
+if [[ ! -f /iroha-database.done ]]
+then
+  sed -i "s/\$IROHA_DATABASE/iroha${ID_INSTANCE}/" /opt/iroha/data/config-${TYPE}.json
+  touch /iroha-database.done
+fi
 
 # start the Iroha Blockchain
 /usr/bin/irohad --config /opt/iroha/data/config-${TYPE}.json --keypair_name ${NAME_KEY} 2>&1 &

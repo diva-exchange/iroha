@@ -20,14 +20,18 @@
 
 TYPE=${TYPE:-"P2P"}
 ID_INSTANCE=${ID_INSTANCE:?err}
-NAME_KEY=${NAME_KEY:?err}
-BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:?err}
+BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
+NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
 IP_ORIGIN=`hostname -I | cut -d' ' -f1`
-IP_PUBLISHED=${IP_PUBLISHED:?err}
-IP_IROHA_NODE=${IP_IROHA_NODE:?err}
+IP_PUBLISHED=${IP_PUBLISHED:-127.19.${ID_INSTANCE}.1}
+
 IP_POSTGRES=${IP_POSTGRES:?err}
-PORT_CONTROL=${PORT_CONTROL:?err}
-PORT_IROHA_PROXY=${PORT_IROHA_PROXY:?err}
+IP_IROHA_NODE=${IP_IROHA_NODE:-127.0.0.0}
+PORT_CONTROL=${PORT_CONTROL:-10002}
+PORT_IROHA_PROXY=${PORT_IROHA_PROXY:-10001}
+
+# wait for postgres
+/wait-for-it.sh ${IP_POSTGRES}:5432 -t 30 || exit 1
 
 # create a new peer, if not available
 if [[ -f name.key ]]
@@ -58,10 +62,8 @@ dnsmasq -RnD -a 127.0.1.1 \
   --address=/${NAME_KEY}.diva.local/127.0.0.1 \
   --address=/diva.local/${IP_IROHA_NODE}
 
-# wait for the control port of a potential proxy
+# wait for the control port of a potential proxy and register
 /wait-for-it.sh ${IP_IROHA_NODE}:${PORT_CONTROL} -t 10
-
-# register at proxy
 URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/register"
 URL="${URL}?ip_origin=${IP_ORIGIN}&ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
 curl --silent -f -I ${URL}

@@ -6,72 +6,35 @@ _Important:_ these instructions are suitable for a testnet in a development envi
 
 ## Get Started
 
-DIVA.EXCHANGE offers preconfigured packages to start or join  an Iroha testnet: 
-https://codeberg.org/diva.exchange/diva-dockerized
+DIVA.EXCHANGE offers preconfigured packages to start or join the DIVA.EXCHANGE Iroha testnet.
 
-For a beginner it's probably easier to use the preconfigured package. The instructions below show how to sta
+For beginners it's probably easier to use the preconfigured package "diva-dockerized" (https://codeberg.org/diva.exchange/diva-dockerized).
 
-### Docker
+For a bit more experienced users on an operating systems supporting Docker (Linux, Windows, MacOS) the following instructions will help to get started.
 
-Pull the image using docker:
-`docker pull divax/iroha:latest`
+### Using Docker Compose
 
-Create a new bash/shell script (adapt the environment variables according to your needs):
-
+Clone the code repository from our public repository:
 ```
-#!/usr/bin/env bash
-
-# -e  Exit immediately if a simple command exits with a non-zero status
-set -e
-
-PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
-cd ${PROJECT_PATH}
-
-ID_INSTANCE=${ID_INSTANCE:-${1:-1}}
-BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
-NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
-NAME=iroha${ID_INSTANCE}
-
-# bridge IP
-IP_IROHA_NODE=`ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+'`
-PORT_CONTROL=${PORT_CONTROL:-10002}
-PORT_IROHA_PROXY=${PORT_IROHA_PROXY:-10001}
-
-IP_PUBLISHED=${IP_PUBLISHED:-127.19.${ID_INSTANCE}.1}
-PORT_EXPOSE_POSTGRES=${PORT_EXPOSE_POSTGRES:-10032}
-PORT_EXPOSE_IROHA_INTERNAL=${PORT_EXPOSE_IROHA_INTERNAL:-10011}
-PORT_EXPOSE_IROHA_TORII=${PORT_EXPOSE_IROHA_TORII:-10051}
-
-# start the container
-docker run \
-  -d \
-  -p ${IP_PUBLISHED}:${PORT_EXPOSE_POSTGRES}:5432 \
-  -p ${IP_PUBLISHED}:${PORT_EXPOSE_IROHA_INTERNAL}:10001 \
-  -p ${IP_PUBLISHED}:${PORT_EXPOSE_IROHA_TORII}:50051 \
-  -v ${NAME}:/opt/iroha \
-  --env BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK} \
-  --env NAME_KEY=${NAME_KEY} \
-  --env IP_PUBLISHED=${IP_PUBLISHED} \
-  --env IP_IROHA_NODE=${IP_IROHA_NODE} \
-  --env PORT_CONTROL=${PORT_CONTROL} \
-  --env PORT_IROHA_PROXY=${PORT_IROHA_PROXY} \
-  --name ${NAME} \
-  --network bridge \
-  divax/iroha:latest
-
-echo "Running ${NAME_KEY} on blockchain network ${BLOCKCHAIN_NETWORK}"
+git clone -b master https://codeberg.org/diva.exchange/iroha.git
+cd iroha
 ```
 
-Execute the above shell script in your environment.
+To start a preconfigured local Iroha make sure you have "Docker Compose" installed (https://docs.docker.com/compose/install/). Check your Docker Compose installation by executing `docker-compose --version` in a terminal.
 
-A new network and a new container will be created. Explore it using the docker tools, like `docker ps -a` or `docker inspect some-name`. To stop and remove the container and/or network, use the docker tools.
+If you have Docker Compose available, just execute within your iroha folder:
+```
+sudo docker-compose up -d
+```
 
-### Source Code
+After a short while you will find two docker container running: a postgres and an iroha container.
+
+
+### Source Code and Building using Docker
 
 Clone the code from git:
 
 ```
-cd /home/me/my-stuff/
 git clone -b master https://codeberg.org/diva.exchange/iroha.git
 cd iroha
 ```
@@ -86,7 +49,7 @@ Make sure you are located in the `iroha` folder. To access Docker you need root 
 sudo ./bin/start.sh
 ```
  
- Now you have an Iroha Container up and running. Important: this uses preconfigured, well-known (publicly available) private keys. Use it for testing/development only.
+Now you have an Iroha Container up and running. Important: this uses preconfigured, well-known (publicly available) private keys. Use it for testing/development only.
 
 #### Stop the Preconfigured Container 
 

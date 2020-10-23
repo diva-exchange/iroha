@@ -29,6 +29,15 @@ sudo docker-compose up -d
 
 After a short while you will find two docker container running: a postgres and an iroha container.
 
+To stop the containers using Docker Compose, execute:
+```
+sudo docker-compose down
+```
+ 
+To stop the containers, including the removal of the related volumes (data of the containers gets removed, so the local blockchain gets deleted) using Docker Compose, execute:
+```
+sudo docker-compose down --volumes
+```
 
 ### Source Code and Building using Docker
 

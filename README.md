@@ -14,7 +14,7 @@ For a bit more experienced users on an operating systems supporting Docker (Linu
 
 ### Using Docker Compose
 
-Clone the code repository from our public repository:
+Clone the code repository from the public repository:
 ```
 git clone -b master https://codeberg.org/diva.exchange/iroha.git
 cd iroha
@@ -38,41 +38,26 @@ To stop the containers, including the removal of the related volumes (data of th
 ```
 sudo docker-compose down --volumes
 ```
+ 
+#### Build your Own Genesis Block
 
-### Source Code and Building using Docker
-
-Clone the code from git:
-
+Make sure, the code is available by cloning the code repository from the public repository:
 ```
 git clone -b master https://codeberg.org/diva.exchange/iroha.git
 cd iroha
 ```
 
-Now you can either start an Iroha container using the existing configuration (with the given keys) - or you can configure your own.
-
-#### Start the Preconfigured Container 
-
-Make sure you are located in the `iroha` folder. To access Docker you need root rights. This will start a container:
-
+Within the folder `data-genesis` you can configure your own Genesis Block. Execute
 ```
-sudo ./bin/start.sh
+sudo ./bin/genesis.sh
 ```
- 
-Now you have an Iroha Container up and running. Important: this uses preconfigured, well-known (publicly available) private keys. Use it for testing/development only.
+to create your own Genesis Block. Take a close look at the script to understand how the private keys are handled!
 
-#### Stop the Preconfigured Container 
-
+After building the Genesis Block, *build* and run your container using Docker Compose 
 ```
-sudo ./bin/halt.sh
+sudo docker-compose up -d --build
 ```
- 
-#### Build your Own  
 
-Within the folder `data-genesis` you can configure your own Genesis Block. Execute `./bin/genesis.sh` to create your own Genesis Block. Take a close look at the script to understand how the private keys are handled!
-
-Then, based on your own Genesis Block, build your own Docker Image: `./bin/build.sh`.
-
-After building, run your container using `./bin/start.sh`. 
 
 ## Contact the Developers
 

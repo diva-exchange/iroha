@@ -39,6 +39,7 @@ RUN apt-get update \
     curl \
     dnsmasq \
     pwgen \
+    procps \
   && chmod +x /entrypoint.sh /wait-for-it.sh
 
 # iroha internal and iroha torii

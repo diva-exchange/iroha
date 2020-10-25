@@ -24,14 +24,14 @@ BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
 
 IP_ORIGIN=`hostname -I | cut -d' ' -f1`
-IP_PUBLISHED=${IP_PUBLISHED:?err}
-IP_POSTGRES=${IP_POSTGRES:?err}
-IP_IROHA_NODE=${IP_IROHA_NODE:-127.0.0.0}
+IP_PUBLISHED=${IP_PUBLISHED:?IP_PUBLISHED undefined}
+IP_IROHA_NODE=${IP_IROHA_NODE:?IP_IROHA_NODE undefined}
 
 PORT_CONTROL=${PORT_CONTROL:-10002}
 PORT_IROHA_PROXY=${PORT_IROHA_PROXY:-10001}
 
 # wait for postgres
+IP_POSTGRES=`getent hosts iroha-postgres | awk '{ print $1 }'`
 /wait-for-it.sh ${IP_POSTGRES}:5432 -t 30 || exit 1
 
 # create a new peer, if not available

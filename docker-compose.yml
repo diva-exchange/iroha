@@ -31,14 +31,12 @@ services:
         target: /var/lib/postgresql/data/
     networks:
       iroha:
-        ipv4_address: 172.19.100.2
   iroha:
     build: .
     image: divax/iroha:latest
     environment:
       ID_INSTANCE: 1
       IP_PUBLISHED: ${IP_PUBLISHED:-127.19.100.3}
-      IP_POSTGRES: 172.19.100.2
       BLOCKCHAIN_NETWORK: ${BLOCKCHAIN_NETWORK:-}
       NAME_KEY: ${NAME_KEY:-}
       IP_IROHA_NODE: ${IP_IROHA_NODE:-127.0.0.0}
@@ -53,14 +51,9 @@ services:
       - ${IP_PUBLISHED:-127.19.100.3}:10051:50051
     networks:
       iroha:
-        ipv4_address: 172.19.100.3
 
 networks:
   iroha:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.19.100.0/24
 
 volumes:
   iroha1:

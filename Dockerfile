@@ -39,6 +39,7 @@ RUN apt-get update \
     curl \
     dnsmasq \
     pwgen \
+    iproute2 \
     procps \
   && chmod +x /entrypoint.sh /wait-for-it.sh
 

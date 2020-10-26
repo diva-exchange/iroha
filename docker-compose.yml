@@ -20,6 +20,7 @@
 version: "3.7"
 services:
   iroha-postgres:
+    container_name: iroha-postgres
     image: postgres:10
     command: -c max_prepared_transactions=100
     environment:
@@ -32,23 +33,23 @@ services:
     networks:
       iroha:
   iroha:
+    container_name: iroha
     build: .
     image: divax/iroha:latest
     environment:
-      ID_INSTANCE: 1
-      IP_PUBLISHED: ${IP_PUBLISHED:-127.19.100.3}
+      IP_PUBLISHED: ${IP_PUBLISHED:-127.19.10.3}
       BLOCKCHAIN_NETWORK: ${BLOCKCHAIN_NETWORK:-}
       NAME_KEY: ${NAME_KEY:-}
-      IP_IROHA_NODE: ${IP_IROHA_NODE:-127.0.0.0}
-      PORT_CONTROL: ${PORT_CONTROL:-10002}
-      PORT_IROHA_PROXY: ${PORT_IROHA_PROXY:-10001}
+      IP_IROHA_PROXY: bridge
+      PORT_IROHA_PROXY: ${PORT_IROHA_PROXY:-19011}
+      PORT_CONTROL: ${PORT_CONTROL:-19012}
     volumes:
       - type: volume
         source: iroha1
         target: /opt/iroha
     ports:
-      - ${IP_PUBLISHED:-127.19.100.3}:10011:10001
-      - ${IP_PUBLISHED:-127.19.100.3}:10051:50051
+      - ${IP_PUBLISHED:-127.19.10.3}:10011:10001
+      - ${IP_PUBLISHED:-127.19.10.3}:10051:50051
     networks:
       iroha:
 

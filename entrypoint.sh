@@ -19,16 +19,21 @@
 #
 
 TYPE=${TYPE:-"P2P"}
-ID_INSTANCE=${ID_INSTANCE:?err}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
 
 IP_ORIGIN=`hostname -I | cut -d' ' -f1`
 IP_PUBLISHED=${IP_PUBLISHED:?IP_PUBLISHED undefined}
-IP_IROHA_NODE=${IP_IROHA_NODE:?IP_IROHA_NODE undefined}
+IP_IROHA_PROXY=${IP_IROHA_PROXY:-}
 
-PORT_CONTROL=${PORT_CONTROL:-10002}
-PORT_IROHA_PROXY=${PORT_IROHA_PROXY:-10001}
+if [[ ${IP_IROHA_PROXY} = 'bridge' ]]
+then
+  IP_IROHA_PROXY=`ip route | awk '/default/ { print $3 }'`
+else
+  IP_IROHA_PROXY=${IP_IROHA_PROXY:-127.0.0.0} # default: 127.0.0.0, non-reachable
+fi
+PORT_IROHA_PROXY=${PORT_IROHA_PROXY:-19011}
+PORT_CONTROL=${PORT_CONTROL:-19012}
 
 # wait for postgres
 IP_POSTGRES=`getent hosts iroha-postgres | awk '{ print $1 }'`
@@ -51,7 +56,7 @@ PUB_KEY=$(<${NAME_KEY}.pub)
 echo ${NAME_KEY} >name.key
 
 echo "Starting Iroha ${NAME_KEY} on published IP ${IP_PUBLISHED}"
-echo "Related Iroha Node ${IP_IROHA_NODE}"
+echo "Related Iroha Node ${IP_IROHA_PROXY}"
 
 # networking configuration
 cat </resolv.conf >/etc/resolv.conf
@@ -61,21 +66,21 @@ dnsmasq -RnD -a 127.0.1.1 \
   --local-service \
   --address=/postgres.diva.local/${IP_POSTGRES} \
   --address=/${NAME_KEY}.diva.local/127.0.0.1 \
-  --address=/diva.local/${IP_IROHA_NODE}
+  --address=/diva.local/${IP_IROHA_PROXY}
 
 # wait for the control port of a potential proxy and register
-/wait-for-it.sh ${IP_IROHA_NODE}:${PORT_CONTROL} -t 10
-URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/register"
+/wait-for-it.sh ${IP_IROHA_PROXY}:${PORT_CONTROL} -t 10
+URL="http://${IP_IROHA_PROXY}:${PORT_CONTROL}/register"
 URL="${URL}?ip_origin=${IP_ORIGIN}&ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
 curl --silent -f -I ${URL}
 
 # wait for a potential proxy
-/wait-for-it.sh ${IP_IROHA_NODE}:${PORT_IROHA_PROXY} -t 10
+/wait-for-it.sh ${IP_IROHA_PROXY}:${PORT_IROHA_PROXY} -t 10
 
 # set the postgres database name
 if [[ ! -f /iroha-database.done ]]
 then
-  sed -i "s/\$IROHA_DATABASE/iroha${ID_INSTANCE}/" /opt/iroha/data/config-${TYPE}.json
+  sed -i "s/\$IROHA_DATABASE/iroha`pwgen -s -A 12 1`/" /opt/iroha/data/config-${TYPE}.json
   touch /iroha-database.done
 fi
 
@@ -83,7 +88,7 @@ fi
 /usr/bin/irohad --config /opt/iroha/data/config-${TYPE}.json --keypair_name ${NAME_KEY} 2>&1 &
 
 # catch SIGINT and SIGTERM
-URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/close"
+URL="http://${IP_IROHA_PROXY}:${PORT_CONTROL}/close"
 URL=${URL}'?ip_origin=${IP_ORIGIN}\&ip_iroha=${IP_PUBLISHED}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY}'
 trap "curl --silent -f -I ${URL} ;\
   pkill -SIGTERM irohad ;\
@@ -91,7 +96,7 @@ trap "curl --silent -f -I ${URL} ;\
   exit 0" SIGTERM SIGINT
 
 # add peer
-URL="http://${IP_IROHA_NODE}:${PORT_CONTROL}/peer/add"
+URL="http://${IP_IROHA_PROXY}:${PORT_CONTROL}/peer/add"
 URL="${URL}?name=${NAME_KEY}&key=${PUB_KEY}"
 curl --silent -f -I ${URL}
 

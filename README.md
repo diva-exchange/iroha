@@ -58,6 +58,28 @@ After building the Genesis Block, *build* and run your container using Docker Co
 sudo docker-compose up -d --build
 ```
 
+## Environment variables
+
+Within the compose file (docker-compose.yml) some environment variables are used. They might be adapted to local needs.
+
+### IP_PUBLISHED 
+Published IP address of the iroha container. Defaults to 127.19.10.3.
+
+### BLOCKCHAIN_NETWORK
+Name of the iroha blockchain network to run. Defaults to an empty string and gets therefore set automatically by the entrypoint script.
+
+### NAME_KEY
+Name of the iroha node and the private/public key. Defaults to an empty string and gets therefore set automatically by the entrypoint script. 
+
+### IP_IROHA_PROXY
+IP address of the related iroha proxy container (used in P2P networks). Use the string "bridge" to use the docker gateway IP. "bridge" is the reasonable setting in a P2P environment. Defaults to an empty string and therefore no proxy gets used.   
+ 
+### PORT_IROHA_PROXY
+Proxy port of the P2P iroha proxy container. Defaults to 19011.
+
+### PORT_CONTROL
+Control port of the P2P iroha proxy container. Defaults to 19012.
+  
 
 ## Contact the Developers
 

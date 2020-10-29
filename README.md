@@ -8,9 +8,9 @@ _Important:_ these instructions are suitable for a testnet in a development envi
 
 DIVA.EXCHANGE offers preconfigured packages to start or join the DIVA.EXCHANGE Iroha testnet.
 
-For beginners it's probably easier to use the preconfigured package "diva-dockerized" (https://codeberg.org/diva.exchange/diva-dockerized).
+It's probably best to use the preconfigured package "diva-dockerized" (https://codeberg.org/diva.exchange/diva-dockerized).
 
-For a bit more experienced users on an operating systems supporting Docker (Linux, Windows, MacOS) the following instructions will help to get started.
+For experienced users on an operating systems supporting Docker (Linux, Windows, MacOS) the following instructions will help to get started.
 
 ### Using Docker Compose
 
@@ -62,8 +62,11 @@ sudo docker-compose up -d --build
 
 Within the compose file (docker-compose.yml) some environment variables are used. They might be adapted to local needs.
 
+### TYPE
+Either NONE, I2P or P2P. NONE does not use any proxy. I2P looks for an I2P proxy and tries to use it. P2P looks for an peer-to-peer proxy and tries to use it. I2P is recommended, P2P is unstable and experimental. Defaults to NONE.
+
 ### IP_PUBLISHED 
-Published IP address of the iroha container. Defaults to 127.19.10.3.
+Published IP address of the iroha container. Mandatory. Reasonable value: 127.19.10.3.
 
 ### BLOCKCHAIN_NETWORK
 Name of the iroha blockchain network to run. Defaults to an empty string and gets therefore set automatically by the entrypoint script.
@@ -80,7 +83,6 @@ Proxy port of the P2P iroha proxy container. Defaults to 19011.
 ### PORT_CONTROL
 Control port of the P2P iroha proxy container. Defaults to 19012.
   
-
 ## Contact the Developers
 
 On [DIVA.EXCHANGE](https://www.diva.exchange) you'll find various options to get in touch with the team. 

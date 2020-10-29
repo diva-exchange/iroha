@@ -32,24 +32,22 @@ services:
         target: /var/lib/postgresql/data/
     networks:
       iroha:
+
   iroha:
     container_name: iroha
     build: .
     image: divax/iroha:latest
     environment:
-      IP_PUBLISHED: ${IP_PUBLISHED:-127.19.10.3}
+      IP_PUBLISHED: 127.19.10.3
       BLOCKCHAIN_NETWORK: ${BLOCKCHAIN_NETWORK:-}
       NAME_KEY: ${NAME_KEY:-}
-      IP_IROHA_PROXY: bridge
-      PORT_IROHA_PROXY: ${PORT_IROHA_PROXY:-19011}
-      PORT_CONTROL: ${PORT_CONTROL:-19012}
     volumes:
       - type: volume
         source: iroha1
         target: /opt/iroha
     ports:
-      - ${IP_PUBLISHED:-127.19.10.3}:10011:10001
-      - ${IP_PUBLISHED:-127.19.10.3}:10051:50051
+      - ${IP_PUBLISHED:-127.19.10.3}:10001:10001
+      - ${IP_PUBLISHED:-127.19.10.3}:19051:50051
     networks:
       iroha:
 

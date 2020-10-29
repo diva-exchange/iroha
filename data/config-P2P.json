@@ -6,7 +6,7 @@
   "torii_port" : 50051,
   "internal_port" : 10001,
   "database": {
-    "host": "postgres.diva.local",
+    "host": "$IP_POSTGRES",
     "port": 5432,
     "user": "iroha",
     "password": "iroha",

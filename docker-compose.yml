@@ -31,29 +31,80 @@ services:
         source: iroha-postgres
         target: /var/lib/postgresql/data/
     networks:
-      iroha:
+      iroha-testnet:
+        ipv4_address: 172.20.101.2
 
-  iroha:
-    container_name: iroha
-    build: .
+  iroha-a-testnet:
+    container_name: iroha-a-testnet
     image: divax/iroha:latest
     environment:
-      IP_PUBLISHED: 127.19.10.3
-      BLOCKCHAIN_NETWORK: ${BLOCKCHAIN_NETWORK:-}
-      NAME_KEY: ${NAME_KEY:-}
+      TYPE: NONE
+      IP_PUBLISHED: 127.20.101.3
+      BLOCKCHAIN_NETWORK: testnet-local
+      NAME_KEY: testnet-a
     volumes:
       - type: volume
-        source: iroha1
+        source: iroha-a-testnet
         target: /opt/iroha
-    ports:
-      - ${IP_PUBLISHED:-127.19.10.3}:10001:10001
-      - ${IP_PUBLISHED:-127.19.10.3}:19051:50051
     networks:
-      iroha:
+      iroha-testnet:
+        ipv4_address: 172.20.101.3
+    extra_hosts:
+      - testnet-b.diva:172.20.101.4
+      - testnet-c.diva:172.20.101.5
+
+  iroha-b-testnet:
+    container_name: iroha-b-testnet
+    image: divax/iroha:latest
+    environment:
+      TYPE: NONE
+      IP_PUBLISHED: 127.20.101.4
+      BLOCKCHAIN_NETWORK: testnet-local
+      NAME_KEY: testnet-b
+    volumes:
+      - type: volume
+        source: iroha-b-testnet
+        target: /opt/iroha
+    networks:
+      iroha-testnet:
+        ipv4_address: 172.20.101.4
+    extra_hosts:
+      - testnet-a.diva:172.20.101.3
+      - testnet-c.diva:172.20.101.5
+
+  iroha-c-testnet:
+    container_name: iroha-c-testnet
+    image: divax/iroha:latest
+    environment:
+      TYPE: NONE
+      IP_PUBLISHED: 127.20.101.5
+      BLOCKCHAIN_NETWORK: testnet-local
+      NAME_KEY: testnet-c
+    volumes:
+      - type: volume
+        source: iroha-c-testnet
+        target: /opt/iroha
+    networks:
+      iroha-testnet:
+        ipv4_address: 172.20.101.5
+    extra_hosts:
+      - testnet-a.diva:172.20.101.3
+      - testnet-b.diva:172.20.101.4
 
 networks:
-  iroha:
+  iroha-testnet:
+    name: iroha-testnet
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.101.0/24
 
 volumes:
-  iroha1:
+  iroha-a-testnet:
+    name: iroha-a-testnet
+  iroha-b-testnet:
+    name: iroha-b-testnet
+  iroha-c-testnet:
+    name: iroha-c-testnet
   iroha-postgres:
+    name: iroha-postgres

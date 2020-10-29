@@ -10,7 +10,7 @@ DIVA.EXCHANGE offers preconfigured packages to start or join the DIVA.EXCHANGE I
 
 It's probably best to use the preconfigured package "diva-dockerized" (https://codeberg.org/diva.exchange/diva-dockerized).
 
-For experienced users on an operating systems supporting Docker (Linux, Windows, MacOS) the following instructions will help to get started.
+For advanced users on an operating system supporting Docker (Linux, Windows, MacOS) the following instructions will help to get started.
 
 ### Using Docker Compose
 
@@ -27,19 +27,19 @@ If you have Docker Compose available, just execute within your iroha folder:
 sudo docker-compose up -d
 ```
 
-After a short while you will find two docker container running: a postgres and an iroha container.
+After a short while you will find four docker container running: a postgres and three iroha container (testnet-a, testnet-b and testnet-c).
 
-To stop the containers using Docker Compose, execute:
+To stop the container using Docker Compose, execute:
 ```
 sudo docker-compose down
 ```
  
-To stop the containers, including the removal of the related volumes (data of the containers gets removed, so the local blockchain gets deleted) using Docker Compose, execute:
+To stop the container, including the removal of the related volumes (data of the containers gets removed, so the local blockchain gets deleted) using Docker Compose, execute:
 ```
 sudo docker-compose down --volumes
 ```
  
-#### Build your Own Genesis Block
+## Build your Own Genesis Block
 
 Make sure, the code is available by cloning the code repository from the public repository:
 ```

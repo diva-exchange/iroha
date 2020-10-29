@@ -59,7 +59,6 @@ echo ${NAME_KEY} >name.key
 cat </resolv.conf >/etc/resolv.conf
 cat </dnsmasq.conf >/etc/dnsmasq.conf
 dnsmasq -RnD -a 127.0.1.1 \
-  --no-hosts \
   --local-service \
   --address=/${NAME_KEY}.diva/127.0.0.1 \
   --address=/diva/${IP_IROHA_PROXY}

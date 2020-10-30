@@ -23,7 +23,6 @@ BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
 
 IP_ORIGIN=`hostname -I | cut -d' ' -f1`
-IP_PUBLISHED=${IP_PUBLISHED:?IP_PUBLISHED undefined}
 IP_IROHA_PROXY=${IP_IROHA_PROXY:-}
 
 if [[ ${IP_IROHA_PROXY} = 'bridge' ]]
@@ -72,6 +71,8 @@ fi
 
 if [[ ${TYPE} = 'P2P' ]]
 then
+  IP_PUBLISHED=${IP_PUBLISHED:?IP_PUBLISHED undefined}
+
   # register at the proxy
   URL="http://${IP_IROHA_PROXY}:${PORT_CONTROL}/register"
   URL="${URL}?ip_origin=${IP_ORIGIN}&ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
@@ -108,7 +109,6 @@ trap "${TRAP}\
 
 echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
 echo "Iroha node: ${NAME_KEY}"
-echo "Published IP: ${IP_PUBLISHED}"
 
 # start the Iroha Blockchain
 /usr/bin/irohad --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY} 2>&1 &

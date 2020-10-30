@@ -39,7 +39,6 @@ services:
     image: divax/iroha:latest
     environment:
       TYPE: NONE
-      IP_PUBLISHED: 127.20.101.3
       BLOCKCHAIN_NETWORK: testnet-local
       NAME_KEY: testnet-a
     volumes:
@@ -58,7 +57,6 @@ services:
     image: divax/iroha:latest
     environment:
       TYPE: NONE
-      IP_PUBLISHED: 127.20.101.4
       BLOCKCHAIN_NETWORK: testnet-local
       NAME_KEY: testnet-b
     volumes:
@@ -77,7 +75,6 @@ services:
     image: divax/iroha:latest
     environment:
       TYPE: NONE
-      IP_PUBLISHED: 127.20.101.5
       BLOCKCHAIN_NETWORK: testnet-local
       NAME_KEY: testnet-c
     volumes:

@@ -87,10 +87,12 @@ else
 fi
 if [[ ! -f /iroha-database.done ]]
 then
-  sed -i "s!\$IROHA_DATABASE!iroha`pwgen -A -0 16 1`!g ; s!\$IP_POSTGRES!"${IP_POSTGRES}"!g" \
-    /opt/iroha/data/config.json
-  touch /iroha-database.done
+  NAME_DATABASE="iroha"`pwgen -A -0 16 1`
+  echo ${NAME_DATABASE} >/iroha-database.done
 fi
+NAME_DATABASE=$(</iroha-database.done)
+sed -i "s!\$IROHA_DATABASE!iroha"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POSTGRES}"!g" \
+  /opt/iroha/data/config.json
 
 # catch SIGINT and SIGTERM
 TRAP=" ;"

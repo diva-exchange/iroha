@@ -21,8 +21,8 @@
 # -e  Exit immediately if a simple command exits with a non-zero status
 set -e
 
-PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-cd ${PROJECT_PATH}/../
+PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
+cd ${PROJECT_PATH}
 
 docker build -f Dockerfile-Genesis --no-cache --force-rm -t divax/iroha-genesis:latest .
 
@@ -70,3 +70,5 @@ docker rm iroha_genesis
 docker volume rm iroha_genesis
 docker network rm iroha-genesis-network
 docker rmi divax/iroha-genesis:latest
+
+${PROJECT_PATH}bin/build.sh

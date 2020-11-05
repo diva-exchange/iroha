@@ -53,9 +53,9 @@ sudo ./bin/genesis.sh
 ```
 to create your own Genesis Block. Take a close look at the script to understand how the private keys are handled!
 
-After building the Genesis Block, *build* and run your container using Docker Compose 
+After building the Genesis Block, run your container using Docker Compose 
 ```
-sudo docker-compose up -d --build
+sudo docker-compose up -d
 ```
 
 ## Environment variables

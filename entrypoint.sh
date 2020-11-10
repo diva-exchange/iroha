@@ -66,7 +66,7 @@ if [[ ${TYPE} = 'P2P' || ${TYPE} = 'I2P' ]]
 then
   echo "Related Iroha Proxy ${IP_IROHA_PROXY}"
   # wait for a potential proxy
-  /wait-for-it.sh ${IP_IROHA_PROXY}:${PORT_IROHA_PROXY} -t 600
+  /wait-for-it.sh ${IP_IROHA_PROXY}:${PORT_IROHA_PROXY} -t 600 || exit 2
 fi
 
 if [[ ${TYPE} = 'P2P' ]]

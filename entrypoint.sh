@@ -21,22 +21,24 @@
 TYPE=${TYPE:-"NONE"}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
+LOG_LEVEL=${LOG_LEVEL:-"info"}
 
-IP_ORIGIN=`hostname -I | cut -d' ' -f1`
-IP_IROHA_PROXY=${IP_IROHA_PROXY:-}
-
-if [[ ${IP_IROHA_PROXY} = 'bridge' ]]
+IP_IROHA_API=${IP_IROHA_API:-}
+if [[ ${IP_IROHA_API} = 'bridge' ]]
 then
-  IP_IROHA_PROXY=`ip route | awk '/default/ { print $3 }'`
+  IP_IROHA_API=`ip route | awk '/default/ { print $3 }'`
 else
-  IP_IROHA_PROXY=${IP_IROHA_PROXY:-127.0.0.0} # default: 127.0.0.0, non-reachable
+  IP_IROHA_API=${IP_IROHA_API:-127.0.0.0} # default: 127.0.0.0, non-reachable
 fi
-PORT_IROHA_PROXY=${PORT_IROHA_PROXY:-19011}
-PORT_CONTROL=${PORT_CONTROL:-19012}
+PORT_IROHA_API=${PORT_IROHA_API:-19012}
 
-# wait for postgres
+IP_HTTP_PROXY=${IP_HTTP_PROXY:-} # like 172.20.101.1
+PORT_HTTP_PROXY=${PORT_HTTP_PROXY:-} # like 4544
+
+# wait for postgres and chill a bit
 IP_POSTGRES=`getent hosts iroha-postgres | awk '{ print $1 }'`
 /wait-for-it.sh ${IP_POSTGRES}:5432 -t 30 || exit 1
+sleep 5
 
 # create a new peer, if not available
 if [[ -f name.key ]]
@@ -57,69 +59,50 @@ echo ${NAME_KEY} >name.key
 # networking configuration
 cat </resolv.conf >/etc/resolv.conf
 cat </dnsmasq.conf >/etc/dnsmasq.conf
-dnsmasq -RnD -a 127.0.1.1 \
+dnsmasq \
+  --listen-address=127.0.1.1 \
+  --no-resolv \
+  --no-poll \
+  --domain-needed \
   --local-service \
-  --address=/${NAME_KEY}.diva/127.0.0.1 \
-  --address=/diva/${IP_IROHA_PROXY}
+  --address=/${NAME_KEY}.diva.i2p/127.0.0.1 \
+  --address=/#/127.0.0.0 # void
 
-if [[ ${TYPE} = 'P2P' || ${TYPE} = 'I2P' ]]
+if [[ ${TYPE} = 'I2P' ]]
 then
-  echo "Related Iroha Proxy ${IP_IROHA_PROXY}"
-  # wait for a potential proxy
-  /wait-for-it.sh ${IP_IROHA_PROXY}:${PORT_IROHA_PROXY} -t 600 || exit 2
-fi
+  echo "Related Iroha API ${IP_IROHA_API}"
+  # wait for the API
+  /wait-for-it.sh ${IP_IROHA_API}:${PORT_IROHA_API} -t 600 || exit 2
 
-if [[ ${TYPE} = 'P2P' ]]
-then
-  IP_PUBLISHED=${IP_PUBLISHED:?IP_PUBLISHED undefined}
-
-  # register at the proxy
-  URL="http://${IP_IROHA_PROXY}:${PORT_CONTROL}/register"
-  URL="${URL}?ip_origin=${IP_ORIGIN}&ip_iroha=${IP_PUBLISHED}&room=${BLOCKCHAIN_NETWORK}&ident=${NAME_KEY}"
-  curl --silent -f -I ${URL}
+  # copy the configuration file
+  cp -r /opt/iroha/data/config-I2P.json /opt/iroha/data/config.json
+else
+  # copy the configuration file
+  cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
 fi
 
 # set the postgres database name and its IP
-if [[ ${TYPE} = 'I2P' ]]
-then
-  cp /opt/iroha/data/config-I2P.json /opt/iroha/data/config.json
-else
-  cp /opt/iroha/data/config-P2P.json /opt/iroha/data/config.json
-fi
 if [[ ! -f /iroha-database.done ]]
 then
-  NAME_DATABASE="iroha"`pwgen -A -0 16 1`
+  NAME_DATABASE="diva_iroha_"`pwgen -A -0 16 1`
   echo ${NAME_DATABASE} >/iroha-database.done
 fi
 NAME_DATABASE=$(</iroha-database.done)
-sed -i "s!\$IROHA_DATABASE!iroha"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POSTGRES}"!g" \
+sed -i "s!\$IROHA_DATABASE!iroha"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POSTGRES}"!g ; s!\$LOG_LEVEL!"${LOG_LEVEL}"!g" \
   /opt/iroha/data/config.json
-
-# catch SIGINT and SIGTERM
-TRAP=" ;"
-if [[ ${TYPE} = 'P2P' ]]
-then
-  URL="http://${IP_IROHA_PROXY}:${PORT_CONTROL}/close"
-  URL=${URL}'?ip_origin=${IP_ORIGIN}\&ip_iroha=${IP_PUBLISHED}\&room=${BLOCKCHAIN_NETWORK}\&ident=${NAME_KEY}'
-  TRAP="curl --silent -f -I ${URL} ;"
-fi
-trap "${TRAP}\
-  sleep 5 ;\
-  exit 0" SIGTERM SIGINT
 
 echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
 echo "Iroha node: ${NAME_KEY}"
 
 # start the Iroha Blockchain
+if [[ ${TYPE} = 'I2P' && ${IP_HTTP_PROXY} != "" && ${PORT_HTTP_PROXY} != "" ]]
+then
+  export http_proxy=http://${IP_HTTP_PROXY}:${PORT_HTTP_PROXY}
+fi
 /usr/bin/irohad --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY} 2>&1 &
 
-if [[ ${TYPE} = 'P2P' ]]
-then
-  # add peer
-  URL="http://${IP_IROHA_PROXY}:${PORT_CONTROL}/peer/add"
-  URL="${URL}?name=${NAME_KEY}&key=${PUB_KEY}"
-  curl --silent -f -I ${URL}
-fi
+# catch SIGINT and SIGTERM
+trap "pkill -SIGTERM irohad ; sleep 5 ; exit 0" SIGTERM SIGINT
 
 # wait forever
 while true

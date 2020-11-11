@@ -63,10 +63,7 @@ sudo docker-compose up -d
 Within the compose file (docker-compose.yml) some environment variables are used. They might be adapted to local needs.
 
 ### TYPE
-Either NONE, I2P or P2P. NONE does not use any proxy. I2P looks for an I2P proxy and tries to use it. P2P looks for an peer-to-peer proxy and tries to use it. I2P is recommended, P2P is unstable and experimental. Defaults to NONE.
-
-### IP_PUBLISHED 
-Published IP address of the iroha container. Mandatory. Reasonable value: 127.19.10.3.
+Either NONE or I2P. NONE does not use any proxy. I2P looks for an I2P proxy and tries to use it. Defaults to NONE.
 
 ### BLOCKCHAIN_NETWORK
 Name of the iroha blockchain network to run. Defaults to an empty string and gets therefore set automatically by the entrypoint script.
@@ -74,15 +71,18 @@ Name of the iroha blockchain network to run. Defaults to an empty string and get
 ### NAME_KEY
 Name of the iroha node and the private/public key. Defaults to an empty string and gets therefore set automatically by the entrypoint script. 
 
-### IP_IROHA_PROXY
-IP address of the related iroha proxy container (used in P2P networks). Use the string "bridge" to use the docker gateway IP. "bridge" is the reasonable setting in a P2P environment. Defaults to an empty string and therefore no proxy gets used.   
+### IP_IROHA_API
+IP address of the related Iroha API container. Use the string "bridge" to use the docker gateway IP. 
  
-### PORT_IROHA_PROXY
-Proxy port of the P2P iroha proxy container. Defaults to 19011.
+### PORT_IROHA_API
+Proxy port of the Iroha API container. Defaults to 19012.
 
-### PORT_CONTROL
-Control port of the P2P iroha proxy container. Defaults to 19012.
-  
+### IP_HTTP_PROXY
+IP address of the container running an HTTP proxy. 
+
+### PORT_HTTP_PROXY
+Port of the container running an HTTP proxy. 
+
 ## Contact the Developers
 
 On [DIVA.EXCHANGE](https://www.diva.exchange) you'll find various options to get in touch with the team. 

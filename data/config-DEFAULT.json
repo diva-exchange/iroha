@@ -1,6 +1,6 @@
 {
   "log": {
-    "level": "trace"
+    "level": "$LOG_LEVEL"
   },
   "block_store_path" : "/opt/iroha/blockstore/",
   "torii_port" : 50051,

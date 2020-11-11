@@ -41,6 +41,7 @@ services:
       TYPE: NONE
       BLOCKCHAIN_NETWORK: testnet-local
       NAME_KEY: testnet-a
+      LOG_LEVEL: trace
     volumes:
       - type: volume
         source: iroha-a-testnet
@@ -49,8 +50,8 @@ services:
       iroha-testnet:
         ipv4_address: 172.20.101.3
     extra_hosts:
-      - testnet-b.diva:172.20.101.4
-      - testnet-c.diva:172.20.101.5
+      - testnet-b.diva.i2p:172.20.101.4
+      - testnet-c.diva.i2p:172.20.101.5
 
   iroha-b-testnet:
     container_name: iroha-b-testnet
@@ -59,6 +60,7 @@ services:
       TYPE: NONE
       BLOCKCHAIN_NETWORK: testnet-local
       NAME_KEY: testnet-b
+      LOG_LEVEL: info
     volumes:
       - type: volume
         source: iroha-b-testnet
@@ -67,8 +69,8 @@ services:
       iroha-testnet:
         ipv4_address: 172.20.101.4
     extra_hosts:
-      - testnet-a.diva:172.20.101.3
-      - testnet-c.diva:172.20.101.5
+      - testnet-a.diva.i2p:172.20.101.3
+      - testnet-c.diva.i2p:172.20.101.5
 
   iroha-c-testnet:
     container_name: iroha-c-testnet
@@ -77,6 +79,7 @@ services:
       TYPE: NONE
       BLOCKCHAIN_NETWORK: testnet-local
       NAME_KEY: testnet-c
+      LOG_LEVEL: critical
     volumes:
       - type: volume
         source: iroha-c-testnet
@@ -85,8 +88,8 @@ services:
       iroha-testnet:
         ipv4_address: 172.20.101.5
     extra_hosts:
-      - testnet-a.diva:172.20.101.3
-      - testnet-b.diva:172.20.101.4
+      - testnet-a.diva.i2p:172.20.101.3
+      - testnet-b.diva.i2p:172.20.101.4
 
 networks:
   iroha-testnet:

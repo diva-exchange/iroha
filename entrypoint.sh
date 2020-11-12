@@ -65,7 +65,6 @@ dnsmasq \
   --no-poll \
   --domain-needed \
   --local-service \
-  --address=/${NAME_KEY}.diva.i2p/127.0.0.1 \
   --address=/#/127.0.0.0 # void
 
 if [[ ${TYPE} = 'I2P' ]]

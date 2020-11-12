@@ -66,6 +66,9 @@ sudo docker-compose up -d
 
 Within the compose file (docker-compose.yml) some environment variables are used. They might be adapted to local needs.
 
+### LOG_LEVEL
+Set the iroha log level: trace, debug, info, warning, error, critical. Defaults to info.
+
 ### TYPE
 Either NONE or I2P. NONE does not use any proxy. I2P looks for an I2P proxy and tries to use it. Defaults to NONE.
 

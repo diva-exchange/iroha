@@ -32,12 +32,16 @@ else
 fi
 PORT_IROHA_API=${PORT_IROHA_API:-19012}
 
-IP_HTTP_PROXY=${IP_HTTP_PROXY:-} # like 172.20.101.1
-PORT_HTTP_PROXY=${PORT_HTTP_PROXY:-} # like 4544
+IP_HTTP_PROXY=${IP_HTTP_PROXY:-} # like 172.20.101.200
+PORT_HTTP_PROXY=${PORT_HTTP_PROXY:-} # like 4444
 
-# wait for postgres and chill a bit
-IP_POSTGRES=`getent hosts iroha-postgres | awk '{ print $1 }'`
-/wait-for-it.sh ${IP_POSTGRES}:5432 -t 30 || exit 1
+# wait for postgres
+NAME_CONTAINER_POSTGRES=${NAME_CONTAINER_POSTGRES:-iroha-postgres}
+IP_POSTGRES=${IP_POSTGRES:-`getent hosts ${NAME_CONTAINER_POSTGRES} | awk '{ print $1 }'`}
+PORT_POSTGRES=${PORT_POSTGRES:-5432}
+/wait-for-it.sh ${IP_POSTGRES}:${PORT_POSTGRES} -t 30 || exit 1
+
+# chill a bit
 sleep 10
 
 # create a new peer, if not available
@@ -58,6 +62,14 @@ echo ${NAME_KEY} >name.key
 
 # networking configuration, disable DNS
 cat </resolv.conf >/etc/resolv.conf
+cat </dnsmasq.conf >/etc/dnsmasq.conf
+dnsmasq \
+  --listen-address=127.0.1.1 \
+  --no-resolv \
+  --no-poll \
+  --domain-needed \
+  --local-service \
+  --address=/#/127.0.0.0 # void
 
 if [[ ${TYPE} = 'I2P' ]]
 then

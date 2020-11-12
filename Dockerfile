@@ -36,6 +36,7 @@ COPY entrypoint.sh wait-for-it.sh /
 
 RUN apt-get update \
   && apt-get -y install \
+    dnsmasq \
     pwgen \
     iproute2 \
     procps \

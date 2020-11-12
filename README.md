@@ -67,10 +67,19 @@ sudo docker-compose up -d
 Within the compose file (docker-compose.yml) some environment variables are used. They might be adapted to local needs.
 
 ### LOG_LEVEL
-Set the iroha log level: trace, debug, info, warning, error, critical. Defaults to info.
+Set the iroha log level: trace, debug, info, warning, error, critical. Default: info.
+
+### NAME_CONTAINER_POSTGRES
+Name of the related postgres container. Default: "iroha-postgres". 
+
+### IP_POSTGRES
+IP address of related postgres container. By default it tries to lookup the IP address of NAME_CONTAINER_POSTGRES, which defaults to "iroha-postgres". 
+
+### PORT_POSTGRES
+Port of the related postgres container. Default: 5432.
 
 ### TYPE
-Either NONE or I2P. NONE does not use any proxy. I2P looks for an I2P proxy and tries to use it. Defaults to NONE.
+Either NONE or I2P. NONE does not use any proxy. I2P looks for an I2P proxy and tries to use it. Default: NONE.
 
 ### BLOCKCHAIN_NETWORK
 Name of the iroha blockchain network to run. Defaults to an empty string and gets therefore set automatically by the entrypoint script.
@@ -85,10 +94,10 @@ IP address of the related Iroha API container. Use the string "bridge" to use th
 Proxy port of the Iroha API container. Defaults to 19012.
 
 ### IP_HTTP_PROXY
-IP address of the container running an HTTP proxy. 
+IP address of the container running an HTTP proxy. Mandatory for I2P.
 
 ### PORT_HTTP_PROXY
-Port of the container running an HTTP proxy. 
+Port of the container running an HTTP proxy. Mandatory for I2P.
 
 ## Contact the Developers
 

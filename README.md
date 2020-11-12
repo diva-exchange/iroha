@@ -1,4 +1,8 @@
-# Hyperledger/Iroha Blockchain
+# DIVA.EXCHANGE: Hyperledger/Iroha Blockchain
+
+This is an open source project (AGPLv3 licensed) - transparently developed by the association [DIVA.EXCHANGE](https://diva.exchange).
+
+All source code is available here: https://codeberg.org/diva.exchange/iroha/.
 
 The blockchain backend of _diva_ is based on Hyperledger/Iroha. 
 
@@ -87,7 +91,7 @@ Port of the container running an HTTP proxy.
 
 On [DIVA.EXCHANGE](https://www.diva.exchange) you'll find various options to get in touch with the team. 
 
-Talk to us via Telegram [https://t.me/diva_exchange_chat_de]() (English or German).
+Talk to us via [Telegram](https://t.me/diva_exchange_chat_de) (English or German).
 
 ## Donations
 

@@ -38,7 +38,7 @@ PORT_HTTP_PROXY=${PORT_HTTP_PROXY:-} # like 4544
 # wait for postgres and chill a bit
 IP_POSTGRES=`getent hosts iroha-postgres | awk '{ print $1 }'`
 /wait-for-it.sh ${IP_POSTGRES}:5432 -t 30 || exit 1
-sleep 5
+sleep 30
 
 # create a new peer, if not available
 if [[ -f name.key ]]
@@ -56,16 +56,8 @@ fi
 PUB_KEY=$(<${NAME_KEY}.pub)
 echo ${NAME_KEY} >name.key
 
-# networking configuration
+# networking configuration, disable DNS
 cat </resolv.conf >/etc/resolv.conf
-cat </dnsmasq.conf >/etc/dnsmasq.conf
-dnsmasq \
-  --listen-address=127.0.1.1 \
-  --no-resolv \
-  --no-poll \
-  --domain-needed \
-  --local-service \
-  --address=/#/127.0.0.0 # void
 
 if [[ ${TYPE} = 'I2P' ]]
 then

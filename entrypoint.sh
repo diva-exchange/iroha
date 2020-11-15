@@ -37,8 +37,6 @@ NO_PROXY=${NO_PROXY:-}
 if [[ ${IP_HTTP_PROXY} = 'bridge' && PORT_HTTP_PROXY != "" ]]
 then
   IP_HTTP_PROXY=`ip route | awk '/default/ { print $3 }'`
-else
-  IP_HTTP_PROXY=""
 fi
 
 # wait for postgres
@@ -101,11 +99,16 @@ echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
 echo "Iroha node: ${NAME_KEY}"
 
 # start the Iroha Blockchain
-if [[ ${IP_HTTP_PROXY} != "" && ${PORT_HTTP_PROXY} != "" ]]
+if [[ ${NO_PROXY} != "" ]]
 then
   export no_proxy=${NO_PROXY}
+fi
+if [[ ${IP_HTTP_PROXY} != "" && ${PORT_HTTP_PROXY} != "" ]]
+then
   export http_proxy=http://${IP_HTTP_PROXY}:${PORT_HTTP_PROXY}
 fi
+echo "No Proxy: ${no_proxy}"
+echo "HTTP Proxy: ${http_proxy}"
 /usr/bin/irohad --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY} 2>&1 &
 
 # catch SIGINT and SIGTERM

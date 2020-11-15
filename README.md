@@ -12,11 +12,13 @@ _Important:_ these instructions are suitable for a testnet in a development envi
 
 DIVA.EXCHANGE offers preconfigured packages to start or join the DIVA.EXCHANGE Iroha testnet.
 
-It's probably best to use the preconfigured package "diva-dockerized" (https://codeberg.org/diva.exchange/diva-dockerized).
+Preconfigured packages are available as [diva-dockerized](https://codeberg.org/diva.exchange/diva-dockerized).
 
 For advanced users on an operating system supporting Docker (Linux, Windows, MacOS) the following instructions will help to get started.
 
 ### Using Docker Compose
+
+**IMPORTANT**: To start a local Iroha testnet, make sure you have [Docker Compose](https://docs.docker.com/compose/install/) installed. Check your Docker Compose installation by executing `docker-compose --version` in a terminal.
 
 Clone the code repository from the public repository:
 ```
@@ -24,7 +26,7 @@ git clone -b master https://codeberg.org/diva.exchange/iroha.git
 cd iroha
 ```
 
-To start a preconfigured local Iroha make sure you have "Docker Compose" installed (https://docs.docker.com/compose/install/). Check your Docker Compose installation by executing `docker-compose --version` in a terminal.
+### Stable release
 
 If you have Docker Compose available, just execute within your iroha folder:
 ```
@@ -42,6 +44,15 @@ To stop the container, including the removal of the related volumes (data of the
 ```
 sudo docker-compose down --volumes
 ```
+ 
+### Use some other release
+
+To start a testnet with a different version of Iroha, set the version as environment variable. Example:
+```
+sudo TAG=1.2.0-rc2 docker-compose up -d
+```
+
+The available versions are listed on docker hub: https://hub.docker.com/r/divax/iroha/tags
  
 ## Build your Own Genesis Block
 

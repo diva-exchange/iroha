@@ -36,7 +36,7 @@ services:
 
   iroha-a-testnet:
     container_name: iroha-a-testnet
-    image: divax/iroha:latest
+    image: divax/iroha:${TAG:-1.1.3}
     environment:
       TYPE: NONE
       BLOCKCHAIN_NETWORK: testnet-local
@@ -56,7 +56,7 @@ services:
 
   iroha-b-testnet:
     container_name: iroha-b-testnet
-    image: divax/iroha:latest
+    image: divax/iroha:${TAG:-1.1.3}
     environment:
       TYPE: NONE
       BLOCKCHAIN_NETWORK: testnet-local
@@ -76,7 +76,7 @@ services:
 
   iroha-c-testnet:
     container_name: iroha-c-testnet
-    image: divax/iroha:latest
+    image: divax/iroha:${TAG:-1.1.3}
     environment:
       TYPE: NONE
       BLOCKCHAIN_NETWORK: testnet-local

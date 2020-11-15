@@ -42,7 +42,7 @@ else
 fi
 
 # wait for postgres
-NAME_CONTAINER_POSTGRES=${NAME_CONTAINER_POSTGRES:-postgres.diva.i2p}
+NAME_CONTAINER_POSTGRES=${NAME_CONTAINER_POSTGRES:-postgres.local.diva.i2p}
 IP_POSTGRES=${IP_POSTGRES:-`getent hosts ${NAME_CONTAINER_POSTGRES} | awk '{ print $1 }'`}
 PORT_POSTGRES=${PORT_POSTGRES:-5432}
 /wait-for-it.sh ${IP_POSTGRES}:${PORT_POSTGRES} -t 30 || exit 1
@@ -77,7 +77,7 @@ dnsmasq \
   --no-poll \
   --domain-needed \
   --local-service \
-  --server=/diva.i2p/127.0.0.11 \
+  --server=/.diva.i2p/127.0.0.11 \
   --address=/#/127.0.0.0
 
 if [[ ${IP_IROHA_API} != '127.0.0.0' ]]

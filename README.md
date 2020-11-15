@@ -89,9 +89,6 @@ IP address of related postgres container. By default it tries to lookup the IP a
 ### PORT_POSTGRES
 Port of the related postgres container. Default: 5432.
 
-### TYPE
-Either NONE or I2P. NONE does not use any proxy. I2P looks for an I2P proxy and tries to use it. Default: NONE.
-
 ### BLOCKCHAIN_NETWORK
 Name of the iroha blockchain network to run. Defaults to an empty string and gets therefore set automatically by the entrypoint script.
 
@@ -105,10 +102,13 @@ IP address of the related Iroha API container. Use the string "bridge" to use th
 Proxy port of the Iroha API container. Defaults to 19012.
 
 ### IP_HTTP_PROXY
-IP address of the container running an HTTP proxy. Mandatory for I2P.
+IP address of the container running an HTTP proxy. Use it together for an I2P network.
 
 ### PORT_HTTP_PROXY
-Port of the container running an HTTP proxy. Mandatory for I2P.
+Port of the container running an HTTP proxy. Use it together for an I2P network.
+
+### NO_PROXY
+Comma separated list of domains to exclude from proxied traffic.
 
 ## Contact the Developers
 

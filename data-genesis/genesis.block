@@ -9,7 +9,7 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"testnet-a.diva:10001",
+                                "address":"testnet-a.diva.i2p:10001",
                                 "peerKey":"$TESTNET_A"
                              }
                           }
@@ -17,7 +17,7 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"testnet-b.diva:10001",
+                                "address":"testnet-b.diva.i2p:10001",
                                 "peerKey":"$TESTNET_B"
                              }
                           }
@@ -25,7 +25,7 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"testnet-c.diva:10001",
+                                "address":"testnet-c.diva.i2p:10001",
                                 "peerKey":"$TESTNET_C"
                              }
                           }

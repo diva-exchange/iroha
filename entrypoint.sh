@@ -18,7 +18,6 @@
 # Author/Maintainer: Konrad Bächler <konrad@diva.exchange>
 #
 
-TYPE=${TYPE:-"NONE"}
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
 LOG_LEVEL=${LOG_LEVEL:-"info"}
@@ -34,9 +33,16 @@ PORT_IROHA_API=${PORT_IROHA_API:-19012}
 
 IP_HTTP_PROXY=${IP_HTTP_PROXY:-} # like 172.20.101.200
 PORT_HTTP_PROXY=${PORT_HTTP_PROXY:-} # like 4444
+NO_PROXY=${NO_PROXY:-}
+if [[ ${IP_HTTP_PROXY} = 'bridge' && PORT_HTTP_PROXY != "" ]]
+then
+  IP_HTTP_PROXY=`ip route | awk '/default/ { print $3 }'`
+else
+  IP_HTTP_PROXY=""
+fi
 
 # wait for postgres
-NAME_CONTAINER_POSTGRES=${NAME_CONTAINER_POSTGRES:-iroha-postgres}
+NAME_CONTAINER_POSTGRES=${NAME_CONTAINER_POSTGRES:-postgres.diva.i2p}
 IP_POSTGRES=${IP_POSTGRES:-`getent hosts ${NAME_CONTAINER_POSTGRES} | awk '{ print $1 }'`}
 PORT_POSTGRES=${PORT_POSTGRES:-5432}
 /wait-for-it.sh ${IP_POSTGRES}:${PORT_POSTGRES} -t 30 || exit 1
@@ -61,6 +67,8 @@ PUB_KEY=$(<${NAME_KEY}.pub)
 echo ${NAME_KEY} >name.key
 
 # networking configuration, disable DNS
+# using upstream docker dns for diva top level domain
+# rest of dns queries returns void (127.0.0.0)
 cat </resolv.conf >/etc/resolv.conf
 cat </dnsmasq.conf >/etc/dnsmasq.conf
 dnsmasq \
@@ -69,16 +77,18 @@ dnsmasq \
   --no-poll \
   --domain-needed \
   --local-service \
-  --address=/#/127.0.0.0 # void
+  --server=/diva.i2p/127.0.0.11 \
+  --address=/#/127.0.0.0
 
-if [[ ${TYPE} = 'I2P' ]]
+if [[ ${IP_IROHA_API} != '127.0.0.0' ]]
 then
   echo "Related Iroha API ${IP_IROHA_API}"
   # wait for the API
   /wait-for-it.sh ${IP_IROHA_API}:${PORT_IROHA_API} -t 600 || exit 2
 
   # copy the configuration file
-  cp -r /opt/iroha/data/config-I2P.json /opt/iroha/data/config.json
+  # cp -r /opt/iroha/data/config-I2P.json /opt/iroha/data/config.json
+  cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
 else
   # copy the configuration file
   cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
@@ -98,8 +108,9 @@ echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
 echo "Iroha node: ${NAME_KEY}"
 
 # start the Iroha Blockchain
-if [[ ${TYPE} = 'I2P' && ${IP_HTTP_PROXY} != "" && ${PORT_HTTP_PROXY} != "" ]]
+if [[ ${IP_HTTP_PROXY} != "" && ${PORT_HTTP_PROXY} != "" ]]
 then
+  export no_proxy=${NO_PROXY}
   export http_proxy=http://${IP_HTTP_PROXY}:${PORT_HTTP_PROXY}
 fi
 /usr/bin/irohad --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY} 2>&1 &

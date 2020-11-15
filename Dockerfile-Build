@@ -25,7 +25,7 @@ LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   description="Distributed digital value exchange upholding security, reliability and privacy" \
   url="https://diva.exchange"
 
-ARG tag=1.2.0-rc.2
+ARG TAG=1.2.0-rc.2
 ARG threads=4
 
 COPY entrypoint-build.sh /
@@ -37,7 +37,7 @@ RUN apt-get update \
   && cd /root/ \
 #  && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
 #  && source /root/.cargo/env \
-  && git clone --depth 1 --branch $tag https://github.com/hyperledger/iroha.git \
+  && git clone --depth 1 --branch $TAG https://github.com/hyperledger/iroha.git \
   && iroha/vcpkg/build_iroha_deps.sh \
   && vcpkg/bootstrap-vcpkg.sh -useSystemBinaries -disableMetrics \
   && vcpkg/vcpkg integrate install \

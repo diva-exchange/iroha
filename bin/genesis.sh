@@ -24,7 +24,8 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
 cd ${PROJECT_PATH}
 
-docker build -f Dockerfile-Genesis --no-cache --force-rm -t divax/iroha-genesis:latest .
+TAG=${TAG:-1.2.0-rc2}
+docker build -f Dockerfile-Genesis --no-cache --force-rm -t divax/iroha-genesis:${TAG} .
 
 docker network create iroha-genesis-network
 
@@ -43,7 +44,7 @@ docker run \
   --name iroha_genesis \
   --volume iroha_genesis:/opt/iroha/ \
   --network=iroha-genesis-network \
-  divax/iroha-genesis:latest
+  divax/iroha-genesis:${TAG}
 
 # wait until the genesis block and the new keys have been created
 sleep 10
@@ -69,6 +70,6 @@ docker stop iroha_genesis
 docker rm iroha_genesis
 docker volume rm iroha_genesis
 docker network rm iroha-genesis-network
-docker rmi divax/iroha-genesis:latest
+docker rmi divax/iroha-genesis:${TAG}
 
 ${PROJECT_PATH}bin/build.sh

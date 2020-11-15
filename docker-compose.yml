@@ -19,8 +19,8 @@
 
 version: "3.7"
 services:
-  iroha-postgres:
-    container_name: iroha-postgres
+  postgres.diva.i2p:
+    container_name: postgres.diva.i2p
     image: postgres:10
     command: -c max_prepared_transactions=100
     environment:
@@ -28,86 +28,60 @@ services:
       POSTGRES_PASSWORD: iroha
     volumes:
       - type: volume
-        source: iroha-postgres
+        source: postgres.diva.i2p
         target: /var/lib/postgresql/data/
-    networks:
-      iroha-testnet:
-        ipv4_address: 172.20.101.2
 
-  iroha-a-testnet:
-    container_name: iroha-a-testnet
+  testnet-a.diva.i2p:
+    container_name: testnet-a.diva.i2p
     image: divax/iroha:${TAG:-1.1.3}
     environment:
-      TYPE: NONE
       BLOCKCHAIN_NETWORK: testnet-local
       NAME_KEY: testnet-a
       LOG_LEVEL: trace
+      IP_HTTP_PROXY: bridge
+      PORT_HTTP_PROXY: 4544
+      NO_PROXY: testnet-a.diva.i2p,testnet-b.diva.i2p,testnet-c.diva.i2p
     volumes:
       - type: volume
-        source: iroha-a-testnet
+        source: testnet-a.diva.i2p
         target: /opt/iroha
-    networks:
-      iroha-testnet:
-        ipv4_address: 172.20.101.3
-    extra_hosts:
-      - testnet-a.diva.i2p:172.20.101.3
-      - testnet-b.diva.i2p:172.20.101.4
-      - testnet-c.diva.i2p:172.20.101.5
 
-  iroha-b-testnet:
-    container_name: iroha-b-testnet
+  testnet-b.diva.i2p:
+    container_name: testnet-b.diva.i2p
     image: divax/iroha:${TAG:-1.1.3}
     environment:
-      TYPE: NONE
       BLOCKCHAIN_NETWORK: testnet-local
       NAME_KEY: testnet-b
       LOG_LEVEL: trace
+      IP_HTTP_PROXY: bridge
+      PORT_HTTP_PROXY: 4544
+      NO_PROXY: testnet-a.diva.i2p,testnet-b.diva.i2p,testnet-c.diva.i2p
     volumes:
       - type: volume
-        source: iroha-b-testnet
+        source: testnet-b.diva.i2p
         target: /opt/iroha
-    networks:
-      iroha-testnet:
-        ipv4_address: 172.20.101.4
-    extra_hosts:
-      - testnet-a.diva.i2p:172.20.101.3
-      - testnet-b.diva.i2p:172.20.101.4
-      - testnet-c.diva.i2p:172.20.101.5
 
-  iroha-c-testnet:
-    container_name: iroha-c-testnet
+  testnet-c.diva.i2p:
+    container_name: testnet-c.diva.i2p
     image: divax/iroha:${TAG:-1.1.3}
     environment:
-      TYPE: NONE
       BLOCKCHAIN_NETWORK: testnet-local
       NAME_KEY: testnet-c
       LOG_LEVEL: trace
+      IP_HTTP_PROXY: bridge
+      PORT_HTTP_PROXY: 4544
+      NO_PROXY: testnet-a.diva.i2p,testnet-b.diva.i2p,testnet-c.diva.i2p
     volumes:
       - type: volume
-        source: iroha-c-testnet
+        source: testnet-c.diva.i2p
         target: /opt/iroha
-    networks:
-      iroha-testnet:
-        ipv4_address: 172.20.101.5
-    extra_hosts:
-      - testnet-a.diva.i2p:172.20.101.3
-      - testnet-b.diva.i2p:172.20.101.4
-      - testnet-c.diva.i2p:172.20.101.5
-
-networks:
-  iroha-testnet:
-    name: iroha-testnet
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.101.0/24
 
 volumes:
-  iroha-a-testnet:
-    name: iroha-a-testnet
-  iroha-b-testnet:
-    name: iroha-b-testnet
-  iroha-c-testnet:
-    name: iroha-c-testnet
-  iroha-postgres:
-    name: iroha-postgres
+  testnet-a.diva.i2p:
+    name: testnet-a.diva.i2p
+  testnet-b.diva.i2p:
+    name: testnet-b.diva.i2p
+  testnet-c.diva.i2p:
+    name: testnet-c.diva.i2p
+  postgres.diva.i2p:
+    name: postgres.diva.i2p

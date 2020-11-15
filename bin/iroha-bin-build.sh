@@ -21,13 +21,12 @@
 # -e  Exit immediately if a simple command exits with a non-zero status
 set -e
 
-TAG=${TAG:-1.2.0-rc2}
-
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
 cd ${PROJECT_PATH}
 
-docker build --pull --no-cache -f Dockerfile-Build --no-cache --force-rm -t divax/iroha-build:latest .
-docker run --name iroha-build divax/iroha-build:latest
+TAG=${TAG:-1.2.0-rc2}
+docker build --pull --no-cache -f Dockerfile-Build --no-cache --force-rm -t divax/iroha-build:${TAG} .
+docker run --name iroha-build divax/iroha-build:${TAG}
 docker cp iroha-build:/root/iroha-cli ./build/iroha-cli-${TAG}-org
 docker cp iroha-build:/root/irohad ./build/irohad-${TAG}-org
 docker cp iroha-build:/root/iroha-cli-stripped ./build/iroha-cli-${TAG}

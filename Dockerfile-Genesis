@@ -25,10 +25,10 @@ LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   description="Distributed digital value exchange upholding security, reliability and privacy" \
   url="https://diva.exchange"
 
-ARG tag=1.2.0-rc2
+ARG TAG=1.2.0-rc2
 
-COPY build/iroha-cli-$tag /usr/bin/iroha-cli
-COPY build/irohad-$tag /usr/bin/irohad
+COPY build/iroha-cli-$TAG /usr/bin/iroha-cli
+COPY build/irohad-$TAG /usr/bin/irohad
 COPY data-genesis/* /opt/iroha/data/
 COPY entrypoint-genesis.sh wait-for-it.sh /
 

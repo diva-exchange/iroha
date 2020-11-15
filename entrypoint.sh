@@ -67,8 +67,6 @@ PUB_KEY=$(<${NAME_KEY}.pub)
 echo ${NAME_KEY} >name.key
 
 # networking configuration, disable DNS
-# using upstream docker dns for diva top level domain
-# rest of dns queries returns void (127.0.0.0)
 cat </resolv.conf >/etc/resolv.conf
 cat </dnsmasq.conf >/etc/dnsmasq.conf
 dnsmasq \
@@ -77,21 +75,16 @@ dnsmasq \
   --no-poll \
   --domain-needed \
   --local-service \
-  --server=/.diva.i2p/127.0.0.11 \
   --address=/#/127.0.0.0
+
+# copy the configuration file
+cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
 
 if [[ ${IP_IROHA_API} != '127.0.0.0' ]]
 then
   echo "Related Iroha API ${IP_IROHA_API}"
   # wait for the API
   /wait-for-it.sh ${IP_IROHA_API}:${PORT_IROHA_API} -t 600 || exit 2
-
-  # copy the configuration file
-  # cp -r /opt/iroha/data/config-I2P.json /opt/iroha/data/config.json
-  cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
-else
-  # copy the configuration file
-  cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
 fi
 
 # set the postgres database name and its IP

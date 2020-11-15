@@ -32,6 +32,7 @@ services:
         target: /var/lib/postgresql/data/
     networks:
       network.local.diva.i2p:
+        ipv4_address: 172.20.101.2
 
   testnet-a.diva.i2p:
     container_name: testnet-a.diva.i2p
@@ -50,6 +51,11 @@ services:
         target: /opt/iroha
     networks:
       network.local.diva.i2p:
+        ipv4_address: 172.20.101.3
+    extra_hosts:
+      - testnet-a.diva.i2p:172.20.101.3
+      - testnet-b.diva.i2p:172.20.101.4
+      - testnet-c.diva.i2p:172.20.101.5
 
   testnet-b.diva.i2p:
     container_name: testnet-b.diva.i2p
@@ -68,6 +74,11 @@ services:
         target: /opt/iroha
     networks:
       network.local.diva.i2p:
+        ipv4_address: 172.20.101.4
+    extra_hosts:
+      - testnet-a.diva.i2p:172.20.101.3
+      - testnet-b.diva.i2p:172.20.101.4
+      - testnet-c.diva.i2p:172.20.101.5
 
   testnet-c.diva.i2p:
     container_name: testnet-c.diva.i2p
@@ -86,10 +97,19 @@ services:
         target: /opt/iroha
     networks:
       network.local.diva.i2p:
+        ipv4_address: 172.20.101.5
+    extra_hosts:
+      - testnet-a.diva.i2p:172.20.101.3
+      - testnet-b.diva.i2p:172.20.101.4
+      - testnet-c.diva.i2p:172.20.101.5
 
 networks:
   network.local.diva.i2p:
     name: network.local.diva.i2p
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.101.0/24
 
 volumes:
   testnet-a.diva.i2p:

@@ -98,6 +98,18 @@ sed -i "s!\$IROHA_DATABASE!iroha"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POS
 echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
 echo "Iroha node: ${NAME_KEY}"
 
+if [[ ! -f /opt/iroha/blockstore/0000000000000001 ]]
+then
+  if [[ ${BLOCKCHAIN_NETWORK} != "testnet" ]]
+  then
+    echo "Initialization: using local genesis"
+    cp /opt/iroha/data/local-genesis/0000000000000001 /opt/iroha/blockstore/0000000000000001
+  else
+    echo "Initialization: using genesis from testnet.diva.exchange"
+    cp /opt/iroha/data/testnet-genesis/0000000000000001 /opt/iroha/blockstore/0000000000000001
+  fi
+fi
+
 # start the Iroha Blockchain
 if [[ ${NO_PROXY} != "" ]]
 then

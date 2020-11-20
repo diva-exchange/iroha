@@ -29,12 +29,12 @@ ARG TAG=1.2.0-rc2
 
 COPY build/iroha-cli-$TAG /usr/bin/iroha-cli
 COPY build/irohad-$TAG /usr/bin/irohad
-COPY data/* /opt/iroha/data/
-COPY blockstore/* /opt/iroha/blockstore/
+COPY data /opt/iroha/data/
 COPY network/* /
 COPY entrypoint.sh wait-for-it.sh /
 
-RUN apt-get update \
+RUN mkdir -p /opt/iroha/blockstore/ \
+  && apt-get update \
   && apt-get -y install \
     dnsmasq \
     pwgen \

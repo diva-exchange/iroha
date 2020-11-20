@@ -51,8 +51,8 @@ sleep 10
 
 # copy genesis block
 cp -f /var/lib/docker/volumes/iroha_genesis/_data/blockstore/0000000000000001 \
-  blockstore/0000000000000001
-chown --reference blockstore blockstore/0000000000000001
+  data/local-genesis/0000000000000001
+chown --reference data data/local-genesis/0000000000000001
 
 # copy keys
 cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/diva@testnet.* data/

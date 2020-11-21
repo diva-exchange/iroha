@@ -103,10 +103,10 @@ then
   if [[ ${BLOCKCHAIN_NETWORK} != "testnet" ]]
   then
     echo "Initialization: using local genesis"
-    cp /opt/iroha/data/local-genesis/0000000000000001 /opt/iroha/blockstore/0000000000000001
+    cp -p /opt/iroha/data/local-genesis/0000000000000001 /opt/iroha/blockstore/0000000000000001
   else
     echo "Initialization: using genesis from testnet.diva.exchange"
-    cp /opt/iroha/data/testnet-genesis/0000000000000001 /opt/iroha/blockstore/0000000000000001
+    cp -p /opt/iroha/data/testnet-genesis/0000000000000001 /opt/iroha/blockstore/0000000000000001
   fi
 fi
 
@@ -124,10 +124,26 @@ echo "HTTP Proxy: ${http_proxy}"
 /usr/bin/irohad --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY} 2>&1 &
 
 # catch SIGINT and SIGTERM
-trap "pkill -SIGTERM irohad ; sleep 5 ; exit 0" SIGTERM SIGINT
+trap "touch /opt/iroha/sigterm" SIGTERM SIGINT
 
-# wait forever
-while true
+# main loop, zip blockchain, if changed
+MTIME_BS=0
+while [[ `pgrep -c irohad` -gt 0 && ! -f /opt/iroha/sigterm ]]
 do
-  tail -f /dev/null & wait ${!}
+  sleep 10
+
+  T_BS=`stat -c %Y /opt/iroha/blockstore`
+  if [[ ${MTIME_BS} != ${T_BS} ]]
+  then
+    MTIME_BS=${T_BS}
+    zip -u -j -1 /opt/iroha/blockstore.zip /opt/iroha/blockstore/*
+  fi
+done
+
+# clean up
+rm -f /opt/iroha/sigterm
+pkill -SIGTERM irohad
+while [[ `pgrep -c irohad` -gt 0 ]]
+do
+  sleep 2
 done

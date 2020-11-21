@@ -40,6 +40,7 @@ RUN mkdir -p /opt/iroha/blockstore/ \
     pwgen \
     iproute2 \
     procps \
+    zip \
   && chmod +x /entrypoint.sh /wait-for-it.sh
 
 # iroha internal and iroha torii

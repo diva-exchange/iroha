@@ -39,6 +39,9 @@ services:
     container_name: testnet-a.diva.local
     image: divax/iroha:${TAG:-1.2.0-rc2}
     restart: unless-stopped
+    stop_grace_period: 30s
+    depends_on:
+      - postgres.diva.local
     environment:
       NAME_CONTAINER_POSTGRES: postgres.diva.local
       NAME_KEY: testnet-a
@@ -59,6 +62,9 @@ services:
     container_name: testnet-b.diva.local
     image: divax/iroha:${TAG:-1.2.0-rc2}
     restart: unless-stopped
+    stop_grace_period: 30s
+    depends_on:
+      - postgres.diva.local
     environment:
       NAME_CONTAINER_POSTGRES: postgres.diva.local
       NAME_KEY: testnet-b
@@ -79,6 +85,9 @@ services:
     container_name: testnet-c.diva.local
     image: divax/iroha:${TAG:-1.2.0-rc2}
     restart: unless-stopped
+    stop_grace_period: 30s
+    depends_on:
+      - postgres.diva.local
     environment:
       NAME_CONTAINER_POSTGRES: postgres.diva.local
       NAME_KEY: testnet-c
@@ -99,6 +108,9 @@ services:
     container_name: explorer.diva.local
     image: divax/iroha-explorer:latest
     restart: unless-stopped
+    depends_on:
+      - postgres.diva.local
+      - testnet-a.diva.local
     environment:
       IP_EXPLORER: 0.0.0.0
       PORT_EXPLORER: 3920
@@ -106,7 +118,7 @@ services:
     ports:
       - 3929:3920
     volumes:
-      - testnet-c.diva.local:/tmp/iroha/:ro
+      - testnet-a.diva.local:/tmp/iroha/:ro
       - explorer.diva.local:/home/node/
     networks:
       network.diva.local:

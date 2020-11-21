@@ -26,14 +26,16 @@ git clone -b master https://codeberg.org/diva.exchange/iroha.git
 cd iroha
 ```
 
-### Stable release
+### Latest available release
 
 If you have Docker Compose available, just execute within your iroha folder:
 ```
 sudo docker-compose up -d
 ```
 
-After a short while you will find four docker container running: a postgres and three iroha container (testnet-a, testnet-b and testnet-c).
+After a short while you will find five docker container running: a postgres container (postgres.diva.local), three iroha container (testnet-a.diva.local, testnet-b.diva.local and testnet-c.diva.local) and an explorer container (explorer.diva.local).
+
+Open your browser and visit the local blockchain explorer: http://localhost:3929.
 
 To stop the container using Docker Compose, execute:
 ```
@@ -49,7 +51,7 @@ sudo docker-compose down --volumes
 
 To start a testnet with a different version of Iroha, set the version as environment variable. Example:
 ```
-sudo TAG=1.2.0-rc2 docker-compose up -d
+sudo TAG=1.1.3 docker-compose up -d
 ```
 
 The available versions are listed on docker hub: https://hub.docker.com/r/divax/iroha/tags

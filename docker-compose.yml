@@ -104,7 +104,7 @@ services:
       PORT_EXPLORER: 3920
       PATH_IROHA: /tmp/iroha/
     ports:
-      - 3920:3920
+      - 3929:3920
     volumes:
       - testnet-c.diva.local:/tmp/iroha/:ro
       - explorer.diva.local:/home/node/

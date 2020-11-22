@@ -58,7 +58,7 @@ if [[ ! -f ${NAME_KEY}.priv || ! -f ${NAME_KEY}.pub ]]
 then
   NAME_KEY=${BLOCKCHAIN_NETWORK}-`pwgen -s -A 12 1`
   /usr/bin/iroha-cli --account_name ${NAME_KEY} --new_account
-  chmod 0644 ${NAME_KEY}.priv
+  chmod 0600 ${NAME_KEY}.priv
   chmod 0644 ${NAME_KEY}.pub
 fi
 PUB_KEY=$(<${NAME_KEY}.pub)

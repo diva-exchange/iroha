@@ -115,8 +115,6 @@ services:
       IP_EXPLORER: 0.0.0.0
       PORT_EXPLORER: 3920
       PATH_IROHA: /tmp/iroha/
-    ports:
-      - 3929:3920
     volumes:
       - testnet-a.diva.local:/tmp/iroha/:ro
       - explorer.diva.local:/home/node/
@@ -126,6 +124,7 @@ services:
 
 networks:
   network.diva.local:
+    internal: true
     name: network.diva.local
     ipam:
       driver: default

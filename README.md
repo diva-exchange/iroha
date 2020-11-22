@@ -33,9 +33,13 @@ If you have Docker Compose available, just execute within your iroha folder:
 sudo docker-compose up -d
 ```
 
+By default this will use the configuration file `/docker-compose.yml`. Within this docker-compose configuration file a local iroha network gets defined. This also involves a network configuration. By default there are no ports explosed and the network is defined as "internal".
+
 After a short while you will find five docker container running: a postgres container (postgres.diva.local), three iroha container (testnet-a.diva.local, testnet-b.diva.local and testnet-c.diva.local) and an explorer container (explorer.diva.local).
 
-Open your browser and visit the local blockchain explorer: http://localhost:3929.
+Open your browser and visit the local blockchain explorer: http://172.29.101.100:3920.
+
+As said, the IP address "172.29.101.100" is defined within the docker compose configuration file, `/docker-compose.yml`. You can set up your own local network configuration and use this configuration file as an example or starting point.
 
 To stop the container using Docker Compose, execute:
 ```

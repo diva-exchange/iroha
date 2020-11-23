@@ -48,6 +48,7 @@ PORT_POSTGRES=${PORT_POSTGRES:-5432}
 # chill a bit
 sleep 10
 
+cd /opt/iroha/data/
 # create a new peer, if not available
 if [[ -f name.key ]]
 then
@@ -63,6 +64,7 @@ then
 fi
 PUB_KEY=$(<${NAME_KEY}.pub)
 echo ${NAME_KEY} >name.key
+cd /opt/iroha/
 
 # networking configuration, disable DNS
 cat </resolv.conf >/etc/resolv.conf
@@ -114,29 +116,39 @@ fi
 if [[ ${NO_PROXY} != "" ]]
 then
   export no_proxy=${NO_PROXY}
+  echo "No Proxy: ${no_proxy}"
 fi
 if [[ ${IP_HTTP_PROXY} != "" && ${PORT_HTTP_PROXY} != "" ]]
 then
   export http_proxy=http://${IP_HTTP_PROXY}:${PORT_HTTP_PROXY}
+  echo "HTTP Proxy: ${http_proxy}"
 fi
-echo "No Proxy: ${no_proxy}"
-echo "HTTP Proxy: ${http_proxy}"
-/usr/bin/irohad --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY} 2>&1 &
+cd /opt/iroha/data/
+/usr/bin/irohad --config config.json --keypair_name ${NAME_KEY} 2>&1 &
+cd /opt/iroha/
 
 # catch SIGINT and SIGTERM
 trap "touch /opt/iroha/sigterm" SIGTERM SIGINT
 
-# main loop, zip blockchain, if changed
+# main loop, pack blockchain, if changed
 MTIME_BS=0
 while [[ `pgrep -c irohad` -gt 0 && ! -f /opt/iroha/sigterm ]]
 do
-  sleep 10
+  sleep 60
 
   T_BS=`stat -c %Y /opt/iroha/blockstore`
   if [[ ${MTIME_BS} != ${T_BS} ]]
   then
     MTIME_BS=${T_BS}
-    zip -u -j -1 /opt/iroha/blockstore.zip /opt/iroha/blockstore/*
+    ls -1t /opt/iroha/blockstore/ >/opt/iroha/lst
+    rm -f /opt/iroha/blockstore.tar.xz
+
+    cd /opt/iroha/blockstore/
+    tar -c -J -f /opt/iroha/blockstore.tar.xz --verbatim-files-from --files-from=/opt/iroha/lst
+    cd /opt/iroha/
+
+    head -1 /opt/iroha/lst >/opt/iroha/latest
+    rm -f /opt/iroha/lst
   fi
 done
 

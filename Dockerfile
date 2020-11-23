@@ -40,7 +40,7 @@ RUN mkdir -p /opt/iroha/blockstore/ \
     pwgen \
     iproute2 \
     procps \
-    zip \
+    xz-utils \
   && chmod 0600 /opt/iroha/data/*.priv \
   && chmod +x /entrypoint.sh /wait-for-it.sh
 
@@ -48,5 +48,5 @@ RUN mkdir -p /opt/iroha/blockstore/ \
 EXPOSE 10001 50051
 
 VOLUME [ "/opt/iroha/" ]
-WORKDIR "/opt/iroha/data/"
+WORKDIR "/opt/iroha/"
 ENTRYPOINT ["/entrypoint.sh"]

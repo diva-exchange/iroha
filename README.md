@@ -28,18 +28,18 @@ cd iroha
 
 ### Latest available release
 
-If you have Docker Compose available, just execute within your iroha folder:
+If you have Docker Compose available, execute within your iroha folder:
 ```
 sudo docker-compose up -d
 ```
 
-By default this will use the configuration file `/docker-compose.yml`. Within this docker-compose configuration file a local iroha network gets defined. This also involves a network configuration. By default there are no ports explosed and the network is defined as "internal".
+By default this will use the configuration file `/docker-compose.yml`. Within this docker-compose configuration file a local iroha testnet gets defined. This also involves a network configuration. By default there are no ports explosed and the network is defined as "internal".
 
-After a short while you will find five docker container running: a postgres container (postgres.diva.local), three iroha container (testnet-a.diva.local, testnet-b.diva.local and testnet-c.diva.local) and an explorer container (explorer.diva.local).
+After start up five docker container will be running: a postgres container (postgres.diva.local), three iroha container (testnet-a.diva.local, testnet-b.diva.local and testnet-c.diva.local) and an explorer container (explorer.diva.local).
 
 Open your browser and visit the local blockchain explorer: http://172.29.101.100:3920.
 
-As said, the IP address "172.29.101.100" is defined within the docker compose configuration file, `/docker-compose.yml`. You can set up your own local network configuration and use this configuration file as an example or starting point.
+The IP address of the explorer, "172.29.101.100", is defined within the docker compose configuration file, `/docker-compose.yml`. Set up your own local network configuration and use this configuration file as an example or starting point.
 
 To stop the container using Docker Compose, execute:
 ```
@@ -100,12 +100,6 @@ Name of the iroha blockchain network to run. Defaults to an empty string and get
 
 ### NAME_KEY
 Name of the iroha node and the private/public key. Defaults to an empty string and gets therefore set automatically by the entrypoint script. 
-
-### IP_IROHA_API
-IP address of the related Iroha API container. Use the string "bridge" to use the docker gateway IP. 
- 
-### PORT_IROHA_API
-Proxy port of the Iroha API container. Defaults to 19012.
 
 ### IP_HTTP_PROXY
 IP address of the container running an HTTP proxy. Use it together for an I2P network.

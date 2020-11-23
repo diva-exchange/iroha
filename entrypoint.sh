@@ -22,15 +22,6 @@ BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
 LOG_LEVEL=${LOG_LEVEL:-"info"}
 
-IP_IROHA_API=${IP_IROHA_API:-}
-if [[ ${IP_IROHA_API} = 'bridge' ]]
-then
-  IP_IROHA_API=`ip route | awk '/default/ { print $3 }'`
-else
-  IP_IROHA_API=${IP_IROHA_API:-127.0.0.0} # default: 127.0.0.0, non-reachable
-fi
-PORT_IROHA_API=${PORT_IROHA_API:-19012}
-
 IP_HTTP_PROXY=${IP_HTTP_PROXY:-} # like 172.20.101.200
 PORT_HTTP_PROXY=${PORT_HTTP_PROXY:-} # like 4444
 NO_PROXY=${NO_PROXY:-}
@@ -45,10 +36,8 @@ IP_POSTGRES=${IP_POSTGRES:-`getent hosts ${NAME_CONTAINER_POSTGRES} | awk '{ pri
 PORT_POSTGRES=${PORT_POSTGRES:-5432}
 /wait-for-it.sh ${IP_POSTGRES}:${PORT_POSTGRES} -t 30 || exit 1
 
-# chill a bit
-sleep 10
-
 cd /opt/iroha/data/
+
 # create a new peer, if not available
 if [[ -f name.key ]]
 then
@@ -79,13 +68,6 @@ dnsmasq \
 
 # copy the configuration file
 cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
-
-if [[ ${IP_IROHA_API} != '127.0.0.0' ]]
-then
-  echo "Related Iroha API ${IP_IROHA_API}"
-  # wait for the API
-  /wait-for-it.sh ${IP_IROHA_API}:${PORT_IROHA_API} -t 600 || exit 2
-fi
 
 # set the postgres database name and its IP
 if [[ ! -f /iroha-database.done ]]

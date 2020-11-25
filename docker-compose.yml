@@ -109,7 +109,6 @@ services:
       PATH_IROHA: /tmp/iroha/
     volumes:
       - testnet-a.diva.local:/tmp/iroha/:ro
-      - explorer.diva.local:/home/node/
     networks:
       network.diva.local:
         ipv4_address: 172.29.101.100
@@ -132,5 +131,3 @@ volumes:
     name: testnet-b.diva.local
   testnet-c.diva.local:
     name: testnet-c.diva.local
-  explorer.diva.local:
-    name: explorer.diva.local

@@ -80,6 +80,8 @@ echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
 echo "Iroha node: ${NAME_KEY}"
 
 # check for a blockstore package to import
+[[ -d /opt/iroha/import/ ]] || mkdir -p /opt/iroha/import/
+[[ -d /opt/iroha/export/ ]] || mkdir -p /opt/iroha/export/
 if [[ -f /opt/iroha/import/blockstore.tar.xz ]]
 then
   tar -xf /opt/iroha/import/blockstore.tar.xz --directory /opt/iroha/blockstore/

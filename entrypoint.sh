@@ -36,24 +36,21 @@ IP_POSTGRES=${IP_POSTGRES:-`getent hosts ${NAME_CONTAINER_POSTGRES} | awk '{ pri
 PORT_POSTGRES=${PORT_POSTGRES:-5432}
 /wait-for-it.sh ${IP_POSTGRES}:${PORT_POSTGRES} -t 30 || exit 1
 
-cd /opt/iroha/data/
-
 # create a new peer, if not available
-if [[ -f name.key ]]
+if [[ -f /opt/iroha/data/name.key ]]
 then
-  NAME_KEY=$(<name.key)
+  NAME_KEY=$(</opt/iroha/data/name.key)
 fi
 
-if [[ ! -f ${NAME_KEY}.priv || ! -f ${NAME_KEY}.pub ]]
+if [[ ! -f /opt/iroha/data/${NAME_KEY}.priv || ! -f /opt/iroha/data/${NAME_KEY}.pub ]]
 then
   NAME_KEY=${BLOCKCHAIN_NETWORK}-`pwgen -s -A 12 1`
-  /usr/bin/iroha-cli --account_name ${NAME_KEY} --new_account
-  chmod 0600 ${NAME_KEY}.priv
-  chmod 0644 ${NAME_KEY}.pub
+  /usr/bin/iroha-cli --key_path /opt/iroha/data/ --account_name ${NAME_KEY} --new_account
+  chmod 0600 /opt/iroha/data/${NAME_KEY}.priv
+  chmod 0644 /opt/iroha/data/${NAME_KEY}.pub
 fi
-PUB_KEY=$(<${NAME_KEY}.pub)
-echo ${NAME_KEY} >name.key
-cd /opt/iroha/
+PUB_KEY=$(</opt/iroha/data/${NAME_KEY}.pub)
+echo ${NAME_KEY} >/opt/iroha/data/name.key
 
 # networking configuration, disable DNS
 cat </resolv.conf >/etc/resolv.conf
@@ -82,6 +79,14 @@ sed -i "s!\$IROHA_DATABASE!iroha"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POS
 echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
 echo "Iroha node: ${NAME_KEY}"
 
+# check for a blockstore package to import
+if [[ -f /opt/iroha/import/blockstore.tar.xz ]]
+then
+  tar -xf /opt/iroha/import/blockstore.tar.xz --directory /opt/iroha/blockstore/
+  rm /opt/iroha/import/blockstore.tar.xz
+fi
+
+# check for the genesis block
 if [[ ! -f /opt/iroha/blockstore/0000000000000001 ]]
 then
   if [[ ${BLOCKCHAIN_NETWORK} != "testnet" ]]
@@ -105,14 +110,12 @@ then
   export http_proxy=http://${IP_HTTP_PROXY}:${PORT_HTTP_PROXY}
   echo "HTTP Proxy: ${http_proxy}"
 fi
-cd /opt/iroha/data/
-/usr/bin/irohad --config config.json --keypair_name ${NAME_KEY} 2>&1 &
-cd /opt/iroha/
+/usr/bin/irohad --config /opt/iroha/data/config.json --key_path /opt/iroha/data/ --keypair_name ${NAME_KEY} 2>&1 &
 
 # catch SIGINT and SIGTERM
 trap "touch /opt/iroha/sigterm" SIGTERM SIGINT
 
-# main loop, pack blockchain, if changed
+# main loop, pack and export blockchain, if changed
 MTIME_BS=0
 while [[ `pgrep -c irohad` -gt 0 && ! -f /opt/iroha/sigterm ]]
 do
@@ -122,15 +125,15 @@ do
   if [[ ${MTIME_BS} != ${T_BS} ]]
   then
     MTIME_BS=${T_BS}
-    ls -1t /opt/iroha/blockstore/ >/opt/iroha/lst
-    rm -f /opt/iroha/blockstore.tar.xz
+    ls -1t /opt/iroha/blockstore/ >/opt/iroha/export/lst
+    rm -f /opt/iroha/export/blockstore.tar.xz
 
-    cd /opt/iroha/blockstore/
-    tar -c -J -f /opt/iroha/blockstore.tar.xz --verbatim-files-from --files-from=/opt/iroha/lst
-    cd /opt/iroha/
+    tar -c -J -f /opt/iroha/export/blockstore.tar.xz \
+      --directory /opt/iroha/blockstore/
+      --verbatim-files-from --files-from=/opt/iroha/export/lst
 
-    head -1 /opt/iroha/lst >/opt/iroha/latest
-    rm -f /opt/iroha/lst
+    head -1 /opt/iroha/export/lst >/opt/iroha/export/latest
+    rm -f /opt/iroha/export/lst
   fi
 done
 

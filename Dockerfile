@@ -34,6 +34,8 @@ COPY network/* /
 COPY entrypoint.sh wait-for-it.sh /
 
 RUN mkdir -p /opt/iroha/blockstore/ \
+  && mkdir -p /opt/iroha/import/ \
+  && mkdir -p /opt/iroha/export/ \
   && apt-get update \
   && apt-get -y install \
     dnsmasq \

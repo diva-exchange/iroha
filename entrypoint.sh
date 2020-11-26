@@ -20,7 +20,7 @@
 
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
 NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
-LOG_LEVEL=${LOG_LEVEL:-"info"}
+LOG_LEVEL=${LOG_LEVEL:-"trace"}
 
 IP_HTTP_PROXY=${IP_HTTP_PROXY:-} # like 172.20.101.200
 PORT_HTTP_PROXY=${PORT_HTTP_PROXY:-} # like 4444
@@ -110,7 +110,9 @@ then
   export http_proxy=http://${IP_HTTP_PROXY}:${PORT_HTTP_PROXY}
   echo "HTTP Proxy: ${http_proxy}"
 fi
-/usr/bin/irohad --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY} 2>&1 &
+cd /opt/iroha/data/
+/usr/bin/irohad --config config.json --keypair_name ${NAME_KEY} 2>&1 &
+cd /opt/iroha/
 
 # catch SIGINT and SIGTERM
 trap "touch /opt/iroha/sigterm" SIGTERM SIGINT

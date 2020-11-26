@@ -67,12 +67,12 @@ dnsmasq \
 cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
 
 # set the postgres database name and its IP
-if [[ ! -f /iroha-database.done ]]
+if [[ ! -f /opt/iroha/data/iroha-database ]]
 then
   NAME_DATABASE="diva_iroha_"`pwgen -A -0 16 1`
-  echo ${NAME_DATABASE} >/iroha-database.done
+  echo ${NAME_DATABASE} >/opt/iroha/data/iroha-database
 fi
-NAME_DATABASE=$(</iroha-database.done)
+NAME_DATABASE=$(</opt/iroha/data/iroha-database)
 sed -i "s!\$IROHA_DATABASE!iroha"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POSTGRES}"!g ; s!\$LOG_LEVEL!"${LOG_LEVEL}"!g" \
   /opt/iroha/data/config.json
 

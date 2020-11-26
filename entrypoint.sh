@@ -110,7 +110,7 @@ then
   export http_proxy=http://${IP_HTTP_PROXY}:${PORT_HTTP_PROXY}
   echo "HTTP Proxy: ${http_proxy}"
 fi
-/usr/bin/irohad --config /opt/iroha/data/config.json --key_path /opt/iroha/data/ --keypair_name ${NAME_KEY} 2>&1 &
+/usr/bin/irohad --config /opt/iroha/data/config.json --keypair_name ${NAME_KEY} 2>&1 &
 
 # catch SIGINT and SIGTERM
 trap "touch /opt/iroha/sigterm" SIGTERM SIGINT
@@ -129,7 +129,7 @@ do
     rm -f /opt/iroha/export/blockstore.tar.xz
 
     tar -c -J -f /opt/iroha/export/blockstore.tar.xz \
-      --directory /opt/iroha/blockstore/
+      --directory /opt/iroha/blockstore/ \
       --verbatim-files-from --files-from=/opt/iroha/export/lst
 
     head -1 /opt/iroha/export/lst >/opt/iroha/export/latest

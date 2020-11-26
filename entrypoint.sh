@@ -80,7 +80,7 @@ echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
 echo "Iroha node: ${NAME_KEY}"
 
 # check for a blockstore package to import
-[[ -d /opt/iroha/import/ ]] || mkdir -p /opt/iroha/import/
+[[ -d /opt/iroha/import/ ]] || mkdir -p /opt/iroha/import/ && chmod a+rwx /opt/iroha/import/
 [[ -d /opt/iroha/export/ ]] || mkdir -p /opt/iroha/export/
 if [[ -f /opt/iroha/import/blockstore.tar.xz ]]
 then
@@ -117,11 +117,11 @@ cd /opt/iroha/data/
 cd /opt/iroha/
 
 # catch SIGINT and SIGTERM
-trap "touch /opt/iroha/sigterm" SIGTERM SIGINT
+trap "touch /opt/iroha/import/sigterm" SIGTERM SIGINT
 
 # main loop, pack and export blockchain, if changed
 MTIME_BS=0
-while [[ `pgrep -c irohad` -gt 0 && ! -f /opt/iroha/sigterm ]]
+while [[ `pgrep -c irohad` -gt 0 && ! -f /opt/iroha/import/sigterm ]]
 do
   sleep 60
 
@@ -142,7 +142,7 @@ do
 done
 
 # clean up
-rm -f /opt/iroha/sigterm
+rm -f /opt/iroha/import/sigterm
 pkill -SIGTERM irohad
 while [[ `pgrep -c irohad` -gt 0 ]]
 do

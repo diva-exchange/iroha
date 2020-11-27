@@ -24,7 +24,7 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
 cd ${PROJECT_PATH}
 
-TAG=${TAG:-1.2.0-rc2}
+TAG=${TAG:-1.2.0}
 docker build -f Dockerfile-Genesis --no-cache --force-rm -t divax/iroha-genesis:${TAG} .
 
 docker network create iroha-genesis-network

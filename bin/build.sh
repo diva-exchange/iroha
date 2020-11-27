@@ -24,5 +24,5 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
 cd ${PROJECT_PATH}
 
-TAG=${TAG:-1.2.0-rc2}
+TAG=${TAG:-1.2.0}
 docker build --build-arg TAG=${TAG} --pull --no-cache -f Dockerfile --no-cache --force-rm -t divax/iroha:${TAG} .

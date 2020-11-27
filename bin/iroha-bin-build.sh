@@ -24,9 +24,11 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
 cd ${PROJECT_PATH}
 
-TAG=${TAG:-1.2.0-rc2}
-docker build --pull --no-cache -f Dockerfile-Build --no-cache --force-rm -t divax/iroha-build:${TAG} .
-docker run --name iroha-build divax/iroha-build:${TAG}
+TAG=${TAG:-1.2.0}
+docker build -f Dockerfile-Build --force-rm -t divax/iroha-build:${TAG} .
+docker run -v iroha-build:/root/ --name iroha-build divax/iroha-build:${TAG}
+
+# copy binaries
 docker cp iroha-build:/root/iroha-cli ./build/iroha-cli-${TAG}-org
 docker cp iroha-build:/root/irohad ./build/irohad-${TAG}-org
 docker cp iroha-build:/root/iroha-cli-stripped ./build/iroha-cli-${TAG}

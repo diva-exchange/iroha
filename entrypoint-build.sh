@@ -18,6 +18,18 @@
 # Author/Maintainer: Konrad Bächler <konrad@diva.exchange>
 #
 
+TAG=${TAG:-1.2.0}
+THREADS=${THREADS:-4}
+
+git clone --depth 1 --branch $TAG https://github.com/hyperledger/iroha.git
+
+iroha/vcpkg/build_iroha_deps.sh
+vcpkg/bootstrap-vcpkg.sh -disableMetrics
+vcpkg/vcpkg integrate install
+cd iroha
+cmake -H. -Bbuild -DTESTING=OFF -DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake -G "Ninja"
+cmake --build build --target all -- -j${THREADS}
+
 cp /root/iroha/build/bin/* /root/
 strip -o /root/iroha-cli-stripped /root/iroha-cli
 strip -o /root/irohad-stripped /root/irohad

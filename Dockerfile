@@ -17,7 +17,7 @@
 # Author/Maintainer: Konrad Bächler <konrad@diva.exchange>
 #
 
-FROM debian:bullseye-slim
+FROM ubuntu:latest
 
 LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   maintainer="Konrad Baechler <konrad@diva.exchange>" \
@@ -25,7 +25,7 @@ LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   description="Distributed digital value exchange upholding security, reliability and privacy" \
   url="https://diva.exchange"
 
-ARG TAG=1.2.0-rc2
+ARG TAG=1.2.0
 
 COPY build/iroha-cli-$TAG /usr/bin/iroha-cli
 COPY build/irohad-$TAG /usr/bin/irohad
@@ -47,6 +47,6 @@ RUN mkdir -p /opt/iroha/blockstore/ \
 # iroha internal and iroha torii
 EXPOSE 10001 50051
 
+WORKDIR /opt/iroha/
 VOLUME [ "/opt/iroha/" ]
-WORKDIR "/opt/iroha/"
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT [ "/entrypoint.sh" ]

@@ -17,7 +17,7 @@
 # Author/Maintainer: Konrad Bächler <konrad@diva.exchange>
 #
 
-FROM debian:bullseye-slim
+FROM ubuntu:latest
 
 LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   maintainer="Konrad Baechler <konrad@diva.exchange>" \
@@ -25,26 +25,25 @@ LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   description="Distributed digital value exchange upholding security, reliability and privacy" \
   url="https://diva.exchange"
 
-ARG TAG=1.2.0-rc.2
-ARG threads=4
+ENV TZ=Europe/Zurich
+ARG DEBIAN_FRONTEND=nointeractive
 
 COPY entrypoint-build.sh /
 
 RUN apt-get update \
   && apt-get -y --no-install-recommends install \
-    build-essential ninja-build python3 \
-    git ca-certificates tar curl unzip cmake \
-  && cd /root/ \
-#  && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
-#  && source /root/.cargo/env \
-  && git clone --depth 1 --branch $TAG https://github.com/hyperledger/iroha.git \
-  && iroha/vcpkg/build_iroha_deps.sh \
-  && vcpkg/bootstrap-vcpkg.sh -useSystemBinaries -disableMetrics \
-  && vcpkg/vcpkg integrate install \
-  && cd iroha \
-#  && cmake -H. -Bbuild -DTESTING=OFF -DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake \
-  && cmake -H. -Bbuild -DTESTING=OFF -DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake -G "Ninja" \
-#  && cmake -H. -Bbuild -DTESTING=OFF -DUSE_LIBURSA=ON -DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake \
-  && cmake --build build --target all -- -j$threads
+    build-essential \
+    ninja-build \
+    pkg-config \
+    git \
+    ca-certificates \
+    tar \
+    curl \
+    zip \
+    unzip \
+    cmake \
+  && chmod +x /entrypoint-build.sh
 
+VOLUME [ "/root/" ]
+WORKDIR /root/
 ENTRYPOINT ["/entrypoint-build.sh"]

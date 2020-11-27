@@ -44,12 +44,14 @@ fi
 # create a new peer key pair, if not available
 if [[ ! -f /opt/iroha/data/${NAME_KEY}.priv || ! -f /opt/iroha/data/${NAME_KEY}.pub ]]
 then
-  NAME_KEY=di`pwgen -s -A -n 28 1`va
+  NAME_KEY=d`pwgen -s -A -n 30 1`a
   cd /opt/iroha/data/
   /usr/bin/iroha-cli --account_name ${NAME_KEY} --new_account
   cd /opt/iroha/
   chmod 0600 /opt/iroha/data/${NAME_KEY}.priv
   chmod 0644 /opt/iroha/data/${NAME_KEY}.pub
+  cp /opt/iroha/data/${NAME_KEY}.priv /opt/iroha/data/${NAME_KEY}@${BLOCKCHAIN_NETWORK}.priv
+  cp /opt/iroha/data/${NAME_KEY}.pub /opt/iroha/data/${NAME_KEY}@${BLOCKCHAIN_NETWORK}.pub
 fi
 PUB_KEY=$(</opt/iroha/data/${NAME_KEY}.pub)
 echo ${NAME_KEY} >/opt/iroha/data/name.key

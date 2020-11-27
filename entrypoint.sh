@@ -36,6 +36,12 @@ IP_POSTGRES=${IP_POSTGRES:-`getent hosts ${NAME_CONTAINER_POSTGRES} | awk '{ pri
 PORT_POSTGRES=${PORT_POSTGRES:-5432}
 /wait-for-it.sh ${IP_POSTGRES}:${PORT_POSTGRES} -t 30 || exit 1
 
+if [[ -f /opt/iroha/data/blockchain.network ]]
+then
+  BLOCKCHAIN_NETWORK=$(</opt/iroha/data/blockchain.network)
+fi
+echo ${BLOCKCHAIN_NETWORK} >/opt/iroha/data/blockchain.network
+
 if [[ -f /opt/iroha/data/name.key ]]
 then
   NAME_KEY=$(</opt/iroha/data/name.key)

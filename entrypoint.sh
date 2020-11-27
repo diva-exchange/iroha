@@ -44,7 +44,7 @@ fi
 
 if [[ ! -f /opt/iroha/data/${NAME_KEY}.priv || ! -f /opt/iroha/data/${NAME_KEY}.pub ]]
 then
-  NAME_KEY=${BLOCKCHAIN_NETWORK}-`pwgen -s -A 12 1`
+  NAME_KEY=`pwgen -s -c -n 32 1`
   /usr/bin/iroha-cli --key_path /opt/iroha/data/ --account_name ${NAME_KEY} --new_account
   chmod 0600 /opt/iroha/data/${NAME_KEY}.priv
   chmod 0644 /opt/iroha/data/${NAME_KEY}.pub
@@ -67,13 +67,13 @@ dnsmasq \
 cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
 
 # set the postgres database name and its IP
-if [[ ! -f /opt/iroha/data/iroha-database ]]
+if [[ ! -f /opt/iroha/data/diva-iroha-database ]]
 then
   NAME_DATABASE="diva_iroha_"`pwgen -A -0 16 1`
-  echo ${NAME_DATABASE} >/opt/iroha/data/iroha-database
+  echo ${NAME_DATABASE} >/opt/iroha/data/diva-iroha-database
 fi
-NAME_DATABASE=$(</opt/iroha/data/iroha-database)
-sed -i "s!\$IROHA_DATABASE!iroha"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POSTGRES}"!g ; s!\$LOG_LEVEL!"${LOG_LEVEL}"!g" \
+NAME_DATABASE=$(</opt/iroha/data/diva-iroha-database)
+sed -i "s!\$IROHA_DATABASE!"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POSTGRES}"!g ; s!\$LOG_LEVEL!"${LOG_LEVEL}"!g" \
   /opt/iroha/data/config.json
 
 echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"

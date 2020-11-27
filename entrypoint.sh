@@ -19,7 +19,7 @@
 #
 
 BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
-NAME_KEY=${NAME_KEY:-${BLOCKCHAIN_NETWORK}-${RANDOM}}
+NAME_KEY=${NAME_KEY:-}
 LOG_LEVEL=${LOG_LEVEL:-"trace"}
 
 IP_HTTP_PROXY=${IP_HTTP_PROXY:-} # like 172.20.101.200
@@ -36,16 +36,18 @@ IP_POSTGRES=${IP_POSTGRES:-`getent hosts ${NAME_CONTAINER_POSTGRES} | awk '{ pri
 PORT_POSTGRES=${PORT_POSTGRES:-5432}
 /wait-for-it.sh ${IP_POSTGRES}:${PORT_POSTGRES} -t 30 || exit 1
 
-# create a new peer, if not available
 if [[ -f /opt/iroha/data/name.key ]]
 then
   NAME_KEY=$(</opt/iroha/data/name.key)
 fi
 
+# create a new peer key pair, if not available
 if [[ ! -f /opt/iroha/data/${NAME_KEY}.priv || ! -f /opt/iroha/data/${NAME_KEY}.pub ]]
 then
-  NAME_KEY=`pwgen -s -c -n 32 1`
-  /usr/bin/iroha-cli --key_path /opt/iroha/data/ --account_name ${NAME_KEY} --new_account
+  NAME_KEY=di`pwgen -s -A -n 28 1`va
+  cd /opt/iroha/data/
+  /usr/bin/iroha-cli --account_name ${NAME_KEY} --new_account
+  cd /opt/iroha/
   chmod 0600 /opt/iroha/data/${NAME_KEY}.priv
   chmod 0644 /opt/iroha/data/${NAME_KEY}.pub
 fi

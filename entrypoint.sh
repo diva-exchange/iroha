@@ -160,4 +160,4 @@ do
   ((t+=1))
   sleep 5
 done
-[[ `pgrep -c irohad` -gt 0 ]] && pkill -SIGKILL irohad
+[[ `pgrep -c irohad` -gt 0 ]] && pkill -SIGKILL irohad && sleep 5

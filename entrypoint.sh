@@ -154,7 +154,10 @@ done
 # clean up
 rm -f /opt/iroha/import/sigterm
 pkill -SIGTERM irohad
-while [[ `pgrep -c irohad` -gt 0 ]]
+t=0
+while [[ ${t} < 10 && `pgrep -c irohad` -gt 0 ]]
 do
-  sleep 2
+  ((t+=1))
+  sleep 5
 done
+[[ `pgrep -c irohad` -gt 0 ]] && pkill -SIGKILL irohad

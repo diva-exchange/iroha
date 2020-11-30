@@ -50,9 +50,9 @@ services:
       network.diva.local:
         ipv4_address: 172.29.101.3
     extra_hosts:
-      - n1.diva.i2p:172.29.101.3
-      - n2.diva.i2p:172.29.101.4
-      - n3.diva.i2p:172.29.101.5
+      - n1.testnet.diva.i2p:172.29.101.3
+      - n2.testnet.diva.i2p:172.29.101.4
+      - n3.testnet.diva.i2p:172.29.101.5
 
   n2.diva.local:
     container_name: n2.diva.local
@@ -71,9 +71,9 @@ services:
       network.diva.local:
         ipv4_address: 172.29.101.4
     extra_hosts:
-      - n1.diva.i2p:172.29.101.3
-      - n2.diva.i2p:172.29.101.4
-      - n3.diva.i2p:172.29.101.5
+      - n1.testnet.diva.i2p:172.29.101.3
+      - n2.testnet.diva.i2p:172.29.101.4
+      - n3.testnet.diva.i2p:172.29.101.5
 
   n3.diva.local:
     container_name: n3.diva.local
@@ -92,9 +92,9 @@ services:
       network.diva.local:
         ipv4_address: 172.29.101.5
     extra_hosts:
-      - n1.diva.i2p:172.29.101.3
-      - n2.diva.i2p:172.29.101.4
-      - n3.diva.i2p:172.29.101.5
+      - n1.testnet.diva.i2p:172.29.101.3
+      - n2.testnet.diva.i2p:172.29.101.4
+      - n3.testnet.diva.i2p:172.29.101.5
 
   explorer.diva.local:
     container_name: explorer.diva.local

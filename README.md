@@ -98,8 +98,8 @@ Port of the related postgres container. Default: 5432.
 ### BLOCKCHAIN_NETWORK
 Name of the iroha blockchain network to run. Defaults to an empty string and gets therefore set automatically by the entrypoint script.
 
-### NAME_KEY
-Name of the iroha node and the private/public key. Defaults to an empty string and gets therefore set automatically by the entrypoint script. 
+### NAME_PEER
+Name of the iroha peer and the private/public key. Defaults to an empty string and gets therefore set automatically by the entrypoint script. 
 
 ### IP_HTTP_PROXY
 IP address of the container running an HTTP proxy. Use it together for an I2P network.

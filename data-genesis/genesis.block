@@ -9,24 +9,24 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"tn1.diva.i2p:10001",
-                                "peerKey":"$TN1"
+                                "address":"n1.testnet.diva.i2p:10001",
+                                "peerKey":"$N1"
                              }
                           }
                        },
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"tn2.diva.i2p:10001",
-                                "peerKey":"$TN2"
+                                "address":"n2.testnet.diva.i2p:10001",
+                                "peerKey":"$N2"
                              }
                           }
                        },
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"tn3.diva.i2p:10001",
-                                "peerKey":"$TN3"
+                                "address":"n3.testnet.diva.i2p:10001",
+                                "peerKey":"$N3"
                              }
                           }
                        },
@@ -103,26 +103,26 @@
                        },
                        {
                           "createDomain":{
-                             "domainId":"testnet",
+                             "domainId":"testnet.diva.i2p",
                              "defaultRole":"subscriber"
                           }
                        },
                        {
                           "createAccount":{
                              "accountName":"diva",
-                             "domainId":"testnet",
+                             "domainId":"testnet.diva.i2p",
                              "publicKey":"$DIVA_TESTNET"
                           }
                        },
                        {
                           "appendRole":{
-                             "accountId":"diva@testnet",
+                             "accountId":"diva@testnet.diva.i2p",
                              "roleName":"developer"
                           }
                        },
                        {
                           "detachRole":{
-                             "accountId":"diva@testnet",
+                             "accountId":"diva@testnet.diva.i2p",
                              "roleName":"subscriber"
                           }
                        }

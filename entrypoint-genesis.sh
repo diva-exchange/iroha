@@ -24,19 +24,19 @@ set -e
 /wait-for-it.sh postgres_genesis:5432 -t 30
 
 # re-creating all testnet keys
-iroha-cli -new_account -account_name diva@testnet
-iroha-cli -new_account -account_name tn1
-iroha-cli -new_account -account_name tn2
-iroha-cli -new_account -account_name tn3
+iroha-cli -new_account -account_name diva@testnet.diva.i2p
+iroha-cli -new_account -account_name n1
+iroha-cli -new_account -account_name n2
+iroha-cli -new_account -account_name n3
 iroha-cli -new_account -account_name genesis-node
 
-DIVA_TESTNET=$(<diva@testnet.pub)
-TN1=$(<tn1.pub)
-TN2=$(<tn2.pub)
-TN3=$(<tn3.pub)
+DIVA_TESTNET=$(<diva@testnet.diva.i2p.pub)
+N1=$(<n1.pub)
+N2=$(<n2.pub)
+N3=$(<n3.pub)
 
 # replace the key values in the genesis.block setup
-sed -i 's!\$DIVA_TESTNET!'"${DIVA_TESTNET}"'!g ; s!\$TN1!'"${TN1}"'!g ; s!\$TN2!'"${TN2}"'!g ; s!\$TN3!'"${TN3}"'!g' genesis.block
+sed -i 's!\$DIVA_TESTNET!'"${DIVA_TESTNET}"'!g ; s!\$N1!'"${N1}"'!g ; s!\$N2!'"${N2}"'!g ; s!\$N3!'"${N3}"'!g' genesis.block
 
 # create the genesis block
 irohad \

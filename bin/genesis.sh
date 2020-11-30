@@ -55,10 +55,10 @@ cp -f /var/lib/docker/volumes/iroha_genesis/_data/blockstore/0000000000000001 \
 chown --reference data data/local-genesis/0000000000000001
 
 # copy keys
-cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/diva@testnet.* data/
-cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/tn1.* data/
-cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/tn2.* data/
-cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/tn3.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/diva@testnet.diva.i2p.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n1.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n2.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n3.* data/
 chown --reference data data/*
 chmod 0600 data/*.priv
 chmod 0644 data/*.pub

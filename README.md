@@ -35,7 +35,7 @@ sudo docker-compose up -d
 
 By default this will use the configuration file `/docker-compose.yml`. Within this docker-compose configuration file a local iroha testnet gets defined. This also involves a network configuration. By default there are no ports explosed and the network is defined as "internal".
 
-After start up five docker container will be running: a postgres container (postgres.diva.local), three iroha container (tn1.diva.local, tn2.diva.local and tn3.diva.local) and an explorer container (explorer.diva.local).
+After start up five docker container will be running: a postgres container (postgres.diva.local), three iroha container (n1.diva.local, n2.diva.local and n3.diva.local) and an explorer container (explorer.diva.local).
 
 Open your browser and visit the local blockchain explorer: http://172.29.101.100:3920.
 

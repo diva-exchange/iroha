@@ -36,7 +36,7 @@ docker run \
   -e POSTGRES_PASSWORD=postgres_genesis \
   --network=iroha-genesis-network \
   -d \
-  postgres:10 \
+  postgres:alpine \
   -c 'max_prepared_transactions=100'
 
 docker run \
@@ -56,9 +56,9 @@ chown --reference data data/local-genesis/0000000000000001
 
 # copy keys
 cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/diva@testnet.* data/
-cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/testnet-a.* data/
-cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/testnet-b.* data/
-cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/testnet-c.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/tn1.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/tn2.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/tn3.* data/
 chown --reference data data/*
 chmod 0600 data/*.priv
 chmod 0644 data/*.pub

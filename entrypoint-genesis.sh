@@ -25,18 +25,18 @@ set -e
 
 # re-creating all testnet keys
 iroha-cli -new_account -account_name diva@testnet
-iroha-cli -new_account -account_name testnet-a
-iroha-cli -new_account -account_name testnet-b
-iroha-cli -new_account -account_name testnet-c
+iroha-cli -new_account -account_name tn1
+iroha-cli -new_account -account_name tn2
+iroha-cli -new_account -account_name tn3
 iroha-cli -new_account -account_name genesis-node
 
 DIVA_TESTNET=$(<diva@testnet.pub)
-TESTNET_A=$(<testnet-a.pub)
-TESTNET_B=$(<testnet-b.pub)
-TESTNET_C=$(<testnet-c.pub)
+TN1=$(<tn1.pub)
+TN2=$(<tn2.pub)
+TN3=$(<tn3.pub)
 
 # replace the key values in the genesis.block setup
-sed -i 's!\$DIVA_TESTNET!'"${DIVA_TESTNET}"'!g ; s!\$TESTNET_A!'"${TESTNET_A}"'!g ; s!\$TESTNET_B!'"${TESTNET_B}"'!g ; s!\$TESTNET_C!'"${TESTNET_C}"'!g' genesis.block
+sed -i 's!\$DIVA_TESTNET!'"${DIVA_TESTNET}"'!g ; s!\$TN1!'"${TN1}"'!g ; s!\$TN2!'"${TN2}"'!g ; s!\$TN3!'"${TN3}"'!g' genesis.block
 
 # create the genesis block
 irohad \

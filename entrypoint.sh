@@ -18,8 +18,6 @@
 # Author/Maintainer: Konrad Bächler <konrad@diva.exchange>
 #
 
-BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-tn-`date -u +%s`-${RANDOM}}
-NAME_KEY=${NAME_KEY:-}
 LOG_LEVEL=${LOG_LEVEL:-"trace"}
 
 IP_HTTP_PROXY=${IP_HTTP_PROXY:-} # like 172.20.101.200
@@ -39,28 +37,35 @@ PORT_POSTGRES=${PORT_POSTGRES:-5432}
 if [[ -f /opt/iroha/data/blockchain.network ]]
 then
   BLOCKCHAIN_NETWORK=$(</opt/iroha/data/blockchain.network)
+else
+  BLOCKCHAIN_NETWORK=${BLOCKCHAIN_NETWORK:-testnet_`pwgen -s -A -0 16 1`}
 fi
 echo ${BLOCKCHAIN_NETWORK} >/opt/iroha/data/blockchain.network
 
-if [[ -f /opt/iroha/data/name.key ]]
+if [[ -f /opt/iroha/data/name.peer ]]
 then
-  NAME_KEY=$(</opt/iroha/data/name.key)
+  NAME_PEER=$(</opt/iroha/data/name.peer)
+else
+  NAME_PEER=${NAME_PEER:-testpeer_`pwgen -s -A -0 16 1`}
 fi
 
 # create a new peer key pair, if not available
-if [[ ! -f /opt/iroha/data/${NAME_KEY}.priv || ! -f /opt/iroha/data/${NAME_KEY}.pub ]]
+if [[ ! -f /opt/iroha/data/${NAME_PEER}.priv || ! -f /opt/iroha/data/${NAME_PEER}.pub ]]
 then
-  NAME_KEY=d`pwgen -s -A -n 30 1`a
   cd /opt/iroha/data/
-  /usr/bin/iroha-cli --account_name ${NAME_KEY} --new_account
+  /usr/bin/iroha-cli --account_name ${NAME_PEER} --new_account
   cd /opt/iroha/
-  chmod 0600 /opt/iroha/data/${NAME_KEY}.priv
-  chmod 0644 /opt/iroha/data/${NAME_KEY}.pub
-  cp /opt/iroha/data/${NAME_KEY}.priv /opt/iroha/data/${NAME_KEY}@${BLOCKCHAIN_NETWORK}.priv
-  cp /opt/iroha/data/${NAME_KEY}.pub /opt/iroha/data/${NAME_KEY}@${BLOCKCHAIN_NETWORK}.pub
+  chmod 0600 /opt/iroha/data/${NAME_PEER}.priv
+  chmod 0644 /opt/iroha/data/${NAME_PEER}.pub
 fi
-PUB_KEY=$(</opt/iroha/data/${NAME_KEY}.pub)
-echo ${NAME_KEY} >/opt/iroha/data/name.key
+NAME_ACCOUNT=${NAME_PEER}@${BLOCKCHAIN_NETWORK}
+if [[ ! -f /opt/iroha/data/${NAME_ACCOUNT}.priv || ! -f /opt/iroha/data/${NAME_ACCOUNT}.pub ]]
+then
+  cp /opt/iroha/data/${NAME_PEER}.priv /opt/iroha/data/${NAME_ACCOUNT}.priv
+  cp /opt/iroha/data/${NAME_PEER}.pub /opt/iroha/data/${NAME_ACCOUNT}.pub
+fi
+PUB_KEY=$(</opt/iroha/data/${NAME_PEER}.pub)
+echo ${NAME_PEER} >/opt/iroha/data/name.peer
 
 # networking configuration, disable DNS
 cat </resolv.conf >/etc/resolv.conf
@@ -87,7 +92,7 @@ sed -i "s!\$IROHA_DATABASE!"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POSTGRES
   /opt/iroha/data/config.json
 
 echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
-echo "Iroha node: ${NAME_KEY}"
+echo "Iroha node: ${NAME_PEER}"
 
 # check for a blockstore package to import
 [[ -d /opt/iroha/import/ ]] || mkdir -p /opt/iroha/import/ && chmod a+rwx /opt/iroha/import/
@@ -123,7 +128,7 @@ then
   echo "HTTP Proxy: ${http_proxy}"
 fi
 cd /opt/iroha/data/
-/usr/bin/irohad --config config.json --keypair_name ${NAME_KEY} 2>&1 &
+/usr/bin/irohad --config config.json --keypair_name ${NAME_PEER} 2>&1 &
 cd /opt/iroha/
 
 # catch SIGINT and SIGTERM

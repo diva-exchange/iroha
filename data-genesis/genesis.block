@@ -9,24 +9,24 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"testnet-a.diva.i2p:10001",
-                                "peerKey":"$TESTNET_A"
+                                "address":"tn1.diva.i2p:10001",
+                                "peerKey":"$TN1"
                              }
                           }
                        },
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"testnet-b.diva.i2p:10001",
-                                "peerKey":"$TESTNET_B"
+                                "address":"tn2.diva.i2p:10001",
+                                "peerKey":"$TN2"
                              }
                           }
                        },
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"testnet-c.diva.i2p:10001",
-                                "peerKey":"$TESTNET_C"
+                                "address":"tn3.diva.i2p:10001",
+                                "peerKey":"$TN3"
                              }
                           }
                        },
@@ -60,14 +60,6 @@
                                 "can_set_quorum",
                                 "can_subtract_asset_qty",
                                 "can_transfer"
-                             ]
-                          }
-                       },
-                       {
-                          "createRole":{
-                             "roleName":"api",
-                             "permissions":[
-                                "can_set_detail"
                              ]
                           }
                        },
@@ -126,12 +118,6 @@
                           "appendRole":{
                              "accountId":"diva@testnet",
                              "roleName":"developer"
-                          }
-                       },
-                       {
-                          "appendRole":{
-                             "accountId":"diva@testnet",
-                             "roleName":"api"
                           }
                        },
                        {

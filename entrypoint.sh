@@ -106,7 +106,7 @@ fi
 # check for the genesis block
 if [[ ! -f /opt/iroha/blockstore/0000000000000001 ]]
 then
-  if [[ !-f /opt/iroha/data/${BLOCKCHAIN_NETWORK}/0000000000000001 ]]
+  if [[ ! -f /opt/iroha/data/${BLOCKCHAIN_NETWORK}/0000000000000001 ]]
   then
     echo "Initialization: using local genesis"
     cp -p /opt/iroha/data/local-genesis/0000000000000001 /opt/iroha/blockstore/0000000000000001

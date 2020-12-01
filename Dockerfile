@@ -41,7 +41,7 @@ RUN mkdir -p /opt/iroha/blockstore/ \
     iproute2 \
     procps \
     xz-utils \
-  && chmod 0600 /opt/iroha/data/*.priv \
+  && chmod -R og+r /opt/iroha/data/ \
   && chmod +x /entrypoint.sh /wait-for-it.sh
 
 # iroha internal and iroha torii

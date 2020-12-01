@@ -55,8 +55,7 @@ then
   cd /opt/iroha/data/
   /usr/bin/iroha-cli --account_name ${NAME_PEER} --new_account
   cd /opt/iroha/
-  chmod 0600 /opt/iroha/data/${NAME_PEER}.priv
-  chmod 0644 /opt/iroha/data/${NAME_PEER}.pub
+  chmod 0644 /opt/iroha/data/${NAME_PEER}.*
 fi
 NAME_ACCOUNT=${NAME_PEER}@${BLOCKCHAIN_NETWORK}
 if [[ ! -f /opt/iroha/data/${NAME_ACCOUNT}.priv || ! -f /opt/iroha/data/${NAME_ACCOUNT}.pub ]]

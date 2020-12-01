@@ -106,13 +106,13 @@ fi
 # check for the genesis block
 if [[ ! -f /opt/iroha/blockstore/0000000000000001 ]]
 then
-  if [[ ${BLOCKCHAIN_NETWORK} != "testnet" ]]
+  if [[ !-f /opt/iroha/data/${BLOCKCHAIN_NETWORK}/0000000000000001 ]]
   then
     echo "Initialization: using local genesis"
     cp -p /opt/iroha/data/local-genesis/0000000000000001 /opt/iroha/blockstore/0000000000000001
   else
-    echo "Initialization: using genesis from testnet.diva.exchange"
-    cp -p /opt/iroha/data/testnet-genesis/0000000000000001 /opt/iroha/blockstore/0000000000000001
+    echo "Initialization: using genesis from ${BLOCKCHAIN_NETWORK}"
+    cp -p /opt/iroha/data/${BLOCKCHAIN_NETWORK}/0000000000000001 /opt/iroha/blockstore/0000000000000001
   fi
 fi
 

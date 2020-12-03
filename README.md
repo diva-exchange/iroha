@@ -86,14 +86,14 @@ Within the compose file (docker-compose.yml) some environment variables are used
 ### LOG_LEVEL
 Set the iroha log level: trace, debug, info, warning, error, critical. Default: info.
 
-### NAME_CONTAINER_POSTGRES
-Name of the related postgres container. Default: "iroha-postgres". 
-
 ### IP_POSTGRES
-IP address of related postgres container. By default it tries to lookup the IP address of NAME_CONTAINER_POSTGRES, which defaults to "iroha-postgres". 
+IP address of related postgres container. Mandatory. 
 
 ### PORT_POSTGRES
 Port of the related postgres container. Default: 5432.
+
+### NAME_DATABASE
+Name of the iroha database to use. Defaults to "iroha". 
 
 ### BLOCKCHAIN_NETWORK
 Name of the iroha blockchain network to run. Defaults to an empty string and gets therefore set automatically by the entrypoint script.

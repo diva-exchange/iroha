@@ -20,6 +20,12 @@
 
 LOG_LEVEL=${LOG_LEVEL:-"trace"}
 
+# wait for postgres
+IP_POSTGRES=${IP_POSTGRES:?Error: environment variable IP_POSTGRES undefined}
+PORT_POSTGRES=${PORT_POSTGRES:-5432}
+/wait-for-it.sh ${IP_POSTGRES}:${PORT_POSTGRES} -t 30 || exit 1
+sleep 10
+
 IP_HTTP_PROXY=${IP_HTTP_PROXY:-} # like 172.20.101.200
 PORT_HTTP_PROXY=${PORT_HTTP_PROXY:-} # like 4444
 NO_PROXY=${NO_PROXY:-}
@@ -27,12 +33,6 @@ if [[ ${IP_HTTP_PROXY} = 'bridge' && PORT_HTTP_PROXY != "" ]]
 then
   IP_HTTP_PROXY=`ip route | awk '/default/ { print $3 }'`
 fi
-
-# wait for postgres
-NAME_CONTAINER_POSTGRES=${NAME_CONTAINER_POSTGRES:-postgres.local.diva.i2p}
-IP_POSTGRES=${IP_POSTGRES:-`getent hosts ${NAME_CONTAINER_POSTGRES} | awk '{ print $1 }'`}
-PORT_POSTGRES=${PORT_POSTGRES:-5432}
-/wait-for-it.sh ${IP_POSTGRES}:${PORT_POSTGRES} -t 30 || exit 1
 
 if [[ -f /opt/iroha/data/blockchain.network ]]
 then
@@ -46,7 +46,7 @@ if [[ -f /opt/iroha/data/name.peer ]]
 then
   NAME_PEER=$(</opt/iroha/data/name.peer)
 else
-  NAME_PEER=${NAME_PEER:-testpeer_`pwgen -s -A -0 16 1`}
+  NAME_PEER=${NAME_PEER:-p`pwgen -s -A -0 24 1`}
 fi
 
 # create a new peer key pair, if not available
@@ -83,12 +83,13 @@ cp -r /opt/iroha/data/config-DEFAULT.json /opt/iroha/data/config.json
 # set the postgres database name and its IP
 if [[ ! -f /opt/iroha/data/diva-iroha-database ]]
 then
-  NAME_DATABASE="diva_iroha_"`pwgen -A -0 16 1`
+  NAME_DATABASE=${NAME_DATABASE:-iroha}  # diva_`pwgen -A -0 16 1`
   echo ${NAME_DATABASE} >/opt/iroha/data/diva-iroha-database
 fi
 NAME_DATABASE=$(</opt/iroha/data/diva-iroha-database)
-sed -i "s!\$IROHA_DATABASE!"${NAME_DATABASE}"!g ; s!\$IP_POSTGRES!"${IP_POSTGRES}"!g ; s!\$LOG_LEVEL!"${LOG_LEVEL}"!g" \
-  /opt/iroha/data/config.json
+sed -i "s!\$IROHA_DATABASE!"${NAME_DATABASE}"!g" /opt/iroha/data/config.json
+sed -i "s!\$IP_POSTGRES!"${IP_POSTGRES}"!g"  /opt/iroha/data/config.json
+sed -i "s!\$LOG_LEVEL!"${LOG_LEVEL}"!g"  /opt/iroha/data/config.json
 
 echo "Blockchain network: ${BLOCKCHAIN_NETWORK}"
 echo "Iroha node: ${NAME_PEER}"

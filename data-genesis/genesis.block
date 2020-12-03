@@ -31,35 +31,42 @@
                           }
                        },
                        {
+                          "addPeer":{
+                             "peer":{
+                                "address":"n4.testnet.diva.i2p:10001",
+                                "peerKey":"$N4"
+                             }
+                          }
+                       },
+                       {
+                          "addPeer":{
+                             "peer":{
+                                "address":"n5.testnet.diva.i2p:10001",
+                                "peerKey":"$N5"
+                             }
+                          }
+                       },
+                       {
+                          "addPeer":{
+                             "peer":{
+                                "address":"n6.testnet.diva.i2p:10001",
+                                "peerKey":"$N6"
+                             }
+                          }
+                       },
+                       {
+                          "addPeer":{
+                             "peer":{
+                                "address":"n7.testnet.diva.i2p:10001",
+                                "peerKey":"$N7"
+                             }
+                          }
+                       },
+                       {
                           "createRole":{
-                             "roleName":"developer",
+                             "roleName":"diva",
                              "permissions":[
-                                "can_add_asset_qty",
-                                "can_add_peer",
-                                "can_add_signatory",
-                                "can_append_role",
-                                "can_create_account",
-                                "can_create_asset",
-                                "can_create_domain",
-                                "can_create_role",
-                                "can_detach_role",
-                                "can_get_all_acc_ast",
-                                "can_get_all_acc_ast_txs",
-                                "can_get_all_acc_detail",
-                                "can_get_all_acc_txs",
-                                "can_get_all_accounts",
-                                "can_get_all_signatories",
-                                "can_get_all_txs",
-                                "can_get_blocks",
-                                "can_get_roles",
-                                "can_get_peers",
-                                "can_read_assets",
-                                "can_receive",
-                                "can_remove_peer",
-                                "can_remove_signatory",
-                                "can_set_quorum",
-                                "can_subtract_asset_qty",
-                                "can_transfer"
+                                "root"
                              ]
                           }
                        },
@@ -117,7 +124,7 @@
                        {
                           "appendRole":{
                              "accountId":"diva@testnet.diva.i2p",
-                             "roleName":"developer"
+                             "roleName":"diva"
                           }
                        },
                        {

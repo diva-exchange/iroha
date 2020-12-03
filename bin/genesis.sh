@@ -24,7 +24,7 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
 cd ${PROJECT_PATH}
 
-TAG=${TAG:-1.2.0}
+TAG=${TAG:-latest}
 docker build -f Dockerfile-Genesis --no-cache --force-rm -t divax/iroha-genesis:${TAG} .
 
 docker network create iroha-genesis-network
@@ -37,7 +37,9 @@ docker run \
   --network=iroha-genesis-network \
   -d \
   postgres:alpine \
-  -c 'max_prepared_transactions=100'
+  --max_prepared_transactions=0
+
+# --max_prepared_transactions=100
 
 docker run \
   -d \
@@ -59,9 +61,11 @@ cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/diva@testnet.diva.i2p.* d
 cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n1.* data/
 cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n2.* data/
 cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n3.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n4.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n5.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n6.* data/
+cp -f /var/lib/docker/volumes/iroha_genesis/_data/data/n7.* data/
 chown --reference data data/*
-chmod 0600 data/*.priv
-chmod 0644 data/*.pub
 
 docker stop postgres_genesis
 docker rm postgres_genesis

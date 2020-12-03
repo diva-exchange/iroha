@@ -37,9 +37,9 @@ By default this will use the configuration file `/docker-compose.yml`. Within th
 
 After start up five docker container will be running: a postgres container (postgres.diva.local), three iroha container (n1.diva.local, n2.diva.local and n3.diva.local) and an explorer container (explorer.diva.local).
 
-Open your browser and visit the local blockchain explorer: http://172.29.101.100:3920.
+Open your browser and visit the local blockchain explorer: http://172.29.101.3:3920.
 
-The IP address of the explorer, "172.29.101.100", is defined within the docker compose configuration file, `/docker-compose.yml`. Set up your own local network configuration and use this configuration file as an example or starting point.
+The IP address of the explorer, "172.29.101.3", is defined within the docker compose configuration file, `/docker-compose.yml`. Set up your own local network configuration and use this configuration file as an example or starting point.
 
 To stop the container using Docker Compose, execute:
 ```

@@ -68,7 +68,7 @@ do
   IP_IROHA=172.29.101.$(( ${IP_IROHA_START} + ${t} ))
   ADD_HOSTS="${ADD_HOSTS}--add-host n${t}.${DOMAIN}:${IP_IROHA}"
   [[ ${t} -lt ${NODES} ]] && ADD_HOSTS="${ADD_HOSTS} "
-  NO_PROXY="${NO_PROXY}n${t}.${DOMAIN}:${IP_IROHA}"
+  NO_PROXY="${NO_PROXY}n${t}.${DOMAIN}"
   [[ ${t} -lt ${NODES} ]] && NO_PROXY="${NO_PROXY},"
 done
 echo "ADD_HOSTS: ${ADD_HOSTS}"

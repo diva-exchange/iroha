@@ -50,16 +50,7 @@ To stop the container, including the removal of the related volumes (data of the
 ```
 sudo docker-compose down --volumes
 ```
- 
-### Use some other release
 
-To start a testnet with a different version of Iroha, set the version as environment variable. Example:
-```
-sudo TAG=1.1.3 docker-compose up -d
-```
-
-The available versions are listed on docker hub: https://hub.docker.com/r/divax/iroha/tags
- 
 ## Build your Own Genesis Block
 
 Make sure, the code is available by cloning the code repository from the public repository:

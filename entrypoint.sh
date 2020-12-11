@@ -128,6 +128,7 @@ then
   echo "HTTP Proxy: ${http_proxy}"
 fi
 cd /opt/iroha/data/
+export GRPC_VERBOSITY=debug
 /usr/bin/irohad --config config.json --keypair_name ${NAME_PEER} 2>&1 &
 cd /opt/iroha/
 

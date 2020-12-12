@@ -24,7 +24,7 @@ set -e
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/../
 cd ${PROJECT_PATH}
 
-TAG=${TAG:-1.2.0}
+TAG=${TAG:-1.2.0-burrow}
 docker build -f Dockerfile-Build --force-rm -t divax/iroha-build:${TAG} .
 docker run -v iroha-build:/root/ --name iroha-build divax/iroha-build:${TAG}
 

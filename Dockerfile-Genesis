@@ -25,7 +25,7 @@ LABEL author="Konrad Baechler <konrad@diva.exchange>" \
   description="Distributed digital value exchange upholding security, reliability and privacy" \
   url="https://diva.exchange"
 
-ARG TAG=1.2.0
+ARG TAG=1.2.0-burrow
 
 COPY build/iroha-cli-$TAG /usr/bin/iroha-cli
 COPY build/irohad-$TAG /usr/bin/irohad

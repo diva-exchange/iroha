@@ -109,7 +109,7 @@ do
     --env BLOCKCHAIN_NETWORK=local \
     --env NO_PROXY=${NO_PROXY} \
     --volume n${t}.${DOMAIN}:/opt/iroha/ \
-    divax/iroha:latest \
+    divax/iroha:burrow \
     >/dev/null
 done
 

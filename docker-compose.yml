@@ -36,7 +36,7 @@ services:
 
   n1.testnet.diva.i2p:
     container_name: n1.testnet.diva.i2p
-    image: divax/iroha:latest
+    image: divax/iroha:burrow
     restart: unless-stopped
     stop_grace_period: 5s
     environment:
@@ -75,7 +75,7 @@ services:
 
   n2.testnet.diva.i2p:
     container_name: n2.testnet.diva.i2p
-    image: divax/iroha:latest
+    image: divax/iroha:burrow
     restart: unless-stopped
     stop_grace_period: 5s
     environment:
@@ -114,7 +114,7 @@ services:
 
   n3.testnet.diva.i2p:
     container_name: n3.testnet.diva.i2p
-    image: divax/iroha:latest
+    image: divax/iroha:burrow
     restart: unless-stopped
     stop_grace_period: 5s
     environment:
@@ -153,7 +153,7 @@ services:
 
   n4.testnet.diva.i2p:
     container_name: n4.testnet.diva.i2p
-    image: divax/iroha:latest
+    image: divax/iroha:burrow
     restart: unless-stopped
     stop_grace_period: 5s
     environment:
@@ -192,7 +192,7 @@ services:
 
   n5.testnet.diva.i2p:
     container_name: n5.testnet.diva.i2p
-    image: divax/iroha:latest
+    image: divax/iroha:burrow
     restart: unless-stopped
     stop_grace_period: 5s
     environment:
@@ -231,7 +231,7 @@ services:
 
   n6.testnet.diva.i2p:
     container_name: n6.testnet.diva.i2p
-    image: divax/iroha:latest
+    image: divax/iroha:burrow
     restart: unless-stopped
     stop_grace_period: 5s
     environment:
@@ -270,7 +270,7 @@ services:
 
   n7.testnet.diva.i2p:
     container_name: n7.testnet.diva.i2p
-    image: divax/iroha:latest
+    image: divax/iroha:burrow
     restart: unless-stopped
     stop_grace_period: 5s
     environment:
